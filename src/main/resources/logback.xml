@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%date{yyyy-MM-dd HH:mm:ss} | %highlight(%-5level) | %boldYellow(%thread) | %boldGreen(%logger{36}) | %msg%n"/>
+    <!--develop-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoder 默认配置为PatternLayoutEncoder -->
+        <encoder>
+            <!--<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--<appender name="FileSmsMontnetWsService" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+    <appender name="TaskLogger" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--时间 返回值-->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SETTLELOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/java/TMS_SETTLE_LOG/tms_settle.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="GPSLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/java/TMS_GPS_LOG/tms_gps_gwl.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="APPGPSLOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/java/TMS_GPS_LOG/tms_gps_app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--易流GPS日志-->
+    <logger name="org.tvs.e6gps.logger.E6GpsLogger" level="INFO" additivity="false">
+        <appender-ref ref="GPSLOG"/>
+    </logger>
+
+    <!--APPGPS日志-->
+    <logger name="org.tms.app.common.AppGpsLogger" level="INFO" additivity="false">
+        <appender-ref ref="APPGPSLOG"/>
+    </logger>
+
+    <!--设置级别为INFO-->
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.jdbc" level="DEBUG"/>
+
+    <logger name="org.jxls" level="INFO"/>
+    <logger name="org.quartz" level="WARN"/>
+    <logger name="org.apache" level="WARN"/>
+    <logger name="net.sf.ehcache" level="WARN"/>
+    <logger name="druid.sql.Connection" level="DEBUG"/>
+
+    <!--设置为DEBUG，单独输出-->
+    <!--<logger name="org.springframework.web" level="DEBUG" additivity="false">-->
+    <!--<appender-ref ref="STDOUT"/>-->
+    <!--</logger>-->
+    <!--logback.LogbackDemo：类的全路径 -->
+    <!--   <logger name="test.log.LogbackDemo" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+      </logger>    -->
+
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
