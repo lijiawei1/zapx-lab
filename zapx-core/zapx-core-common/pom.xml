@@ -3,19 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>zapx-lab</artifactId>
+        <artifactId>zapx-core</artifactId>
         <groupId>org.zapx</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>zapx-core</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>zapx-core-dao</module>
-        <module>zapx-core-controller</module>
-        <module>zapx-core-common</module>
-    </modules>
+    <artifactId>zapx-core-common</artifactId>
 
 
 </project>
