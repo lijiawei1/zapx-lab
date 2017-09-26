@@ -1,0 +1,57 @@
+#swagger.title=spring-boot-starter-swagger
+#swagger.description=Starter for swagger 2.x
+#swagger.version=1.1.0.RELEASE
+#swagger.license=Apache License, Version 2.0
+#swagger.licenseUrl=https://www.apache.org/licenses/LICENSE-2.0.html
+#swagger.termsOfServiceUrl=https://github.com/dyc87112/spring-boot-starter-swagger
+#swagger.contact.name=程序猿DD
+#swagger.contact.url=http://blog.didispace.com
+#swagger.contact.email=dyc87112@qq.com
+#swagger.base-package=com.didispace
+#swagger.base-path=/**
+#swagger.exclude-path=/error, /ops/**
+
+
+swagger:
+  title: zap-lab 接口文档
+  description: 测试接口文档
+  version: 1.0.0
+  #全局操作参数
+  global-operation-parameters:
+    - { name: access_token, description: user access token, modelRef: string, parameterType: header, required: true }
+    - { name: timestamp, description: access timestamp, modelRef: string, parameterType: header, required: true }
+#  base-path: /**
+  exclude-path:
+    - /error
+    - /users/**
+server:
+  port: 9090
+
+#  spring.application.name=swagger-demo
+
+#  server.port=9090
+
+  #swagger.enabled=false
+
+#  swagger.title=spring-boot-starter-swagger
+#  swagger.description=Starter for swagger 2.x
+#  swagger.version=1.1.0.RELEASE
+#  swagger.license=Apache License, Version 2.0
+#  swagger.licenseUrl=https://www.apache.org/licenses/LICENSE-2.0.html
+#  swagger.termsOfServiceUrl=https://github.com/dyc87112/spring-boot-starter-swagger
+#  swagger.contact.name=didi
+#  swagger.contact.url=http://blog.didispace.com
+#  swagger.contact.email=dyc87112@qq.com
+#  swagger.base-package=com.didispace
+#
+#  swagger.global-operation-parameters[0].name=access_token
+#  swagger.global-operation-parameters[0].description=user access token
+#  swagger.global-operation-parameters[0].modelRef=string
+#  swagger.global-operation-parameters[0].parameterType=header
+#  swagger.global-operation-parameters[0].required=true
+#
+#  swagger.global-operation-parameters[1].name=timestamp
+#  swagger.global-operation-parameters[1].description=access timestamp
+#  swagger.global-operation-parameters[1].modelRef=int
+#  swagger.global-operation-parameters[1].parameterType=header
+#  swagger.global-operation-parameters[1].required=false

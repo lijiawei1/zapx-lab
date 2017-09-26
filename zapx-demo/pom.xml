@@ -13,5 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>zapx-demo-mvc</module>
+        <module>zapx-demo-dao</module>
     </modules>
 </project>
