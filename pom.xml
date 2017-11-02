@@ -9,7 +9,6 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>zapx-lab-mvc</module>
         <module>zapx-core</module>
         <module>zapx-web</module>
         <module>zapx-demo</module>

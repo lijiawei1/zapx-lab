@@ -17,7 +17,9 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.stereotype.Repository;
+import org.zap.framework.exception.BusinessException;
 import org.zap.framework.orm.creator.*;
+import org.zap.framework.orm.dao.IBaseDao;
 import org.zap.framework.orm.exception.ExEnum;
 import org.zap.framework.orm.extractor.EnhanceMapListExtractor;
 import org.zap.framework.orm.extractor.Extractor;
@@ -44,7 +46,7 @@ import java.util.Map;
  * @author Shin
  */
 @Repository("baseDao")
-public class BaseDao {
+public class BaseDao implements IBaseDao {
 
     /**
      * 查询总数
@@ -225,33 +227,6 @@ public class BaseDao {
     }
 
     /**
-     * 排序
-     *
-     * @param clazz    实体类型
-     * @param sortCols 排序列
-     * @param clause   条件/排序语句
-     * @param params   查询参数
-     * @param asc      正序倒叙
-     * @param <T>      实体类
-     * @return 实体
-     */
-    @Deprecated
-    public <T> T querySortByClause(Class<T> clazz, String[] sortCols, String clause, final Object[] params,
-                                   boolean asc) {
-        List<T> list = jdbcTemplate.query(
-                SQLUtils.format(selecteSqlCreator.createSortByClauseSql(clazz, sortCols, clause, asc).toString(), getDbTypeString()),
-                new PreparedStatementSetter() {
-                    public void setValues(PreparedStatement ps) throws SQLException {
-                        for (int i = 0; i < params.length; i++) {
-                            ps.setObject(i + 1, params[i]);
-                        }
-                    }
-                }, new BeanListExtractor<T>(clazz, lobHandler));
-
-        return list != null && list.size() > 0 ? list.get(0) : null;
-    }
-
-    /**
      * 查询业务实体列表
      *
      * @param clazz  实体类型
@@ -286,34 +261,23 @@ public class BaseDao {
      *
      * @param clazz  实体类型
      * @param clause 条件/排序语句
-     * @param <T>    实体类
-     * @return 所有根节点的列表
-     */
-    public <T> List<T> queryTreeByClause(Class<T> clazz, String clause) {
-
-        notTree(clazz);
-
-        List<T> query = jdbcTemplate.query(SQLUtils.format(selecteSqlCreator.createByClauseSql(clazz, null, clause).toString(), getDbTypeString()),
-                new BeanListExtractor<T>(clazz, lobHandler));
-
-        return BeanHelper.buildTree(query);
-    }
-
-    /**
-     * 查询业务实体树形列表，映射类必须实现树形接口ITree
-     *
-     * @param clazz  实体类型
-     * @param clause 条件/排序语句
      * @param params 查询参数
      * @param <T>    实体类
      * @return 所有根节点的列表
      */
-    public <T> List<T> queryTreeByClause(Class<T> clazz, String clause, Object[] params) {
+    public <T> List<T> queryTreeByClause(Class<T> clazz, String clause, Object... params) {
 
         notTree(clazz);
 
-        List<T> query = jdbcTemplate.query(SQLUtils.format(selecteSqlCreator.createByClauseSql(clazz, null, clause).toString(), getDbTypeString()), params,
-                new BeanListExtractor<T>(clazz, lobHandler));
+        List<T> query = null;
+
+        if (params != null && params.length > 0) {
+            query = jdbcTemplate.query(SQLUtils.format(selecteSqlCreator.createByClauseSql(clazz, null, clause).toString(), getDbTypeString()),
+                    new BeanListExtractor<T>(clazz, lobHandler));
+        } else {
+            query = jdbcTemplate.query(SQLUtils.format(selecteSqlCreator.createByClauseSql(clazz, null, clause).toString(), getDbTypeString()), params,
+                    new BeanListExtractor<T>(clazz, lobHandler));
+        }
 
         return BeanHelper.buildTree(query);
     }
@@ -377,21 +341,6 @@ public class BaseDao {
     }
 
     /**
-     * 等价查询
-     *
-     * @param pojo   等价实体
-     * @param clause 条件/排序语句
-     * @param <T>    实体类
-     * @return 实体列表
-     */
-    @Deprecated
-    public <T> List<T> queryByPo(T pojo, String clause) {
-        return getNameTemplate().query(SQLUtils.format(selecteSqlCreator.createSqlByPo(pojo, null, clause).toString(), getDbTypeString()),
-                BeanHelper.toMap(pojo, UpdateSqlCreator.getInstance().notNullCols(pojo)),
-                new BeanListExtractor<T>((Class<T>) pojo.getClass(), lobHandler));
-    }
-
-    /**
      * 插表
      *
      * @param entity 实体
@@ -401,7 +350,7 @@ public class BaseDao {
     public <T> int insert(T entity) {
 
         Object id = BeanHelper.getId(entity);
-        return insert(new Object[]{entity}, StringUtils.isNotBlank((String) id));
+        return insertArray(new Object[]{entity}, StringUtils.isNotBlank((String) id));
     }
 
     /**
@@ -412,7 +361,7 @@ public class BaseDao {
      * @param <T>      实体类
      * @return 影响的行数
      */
-    public <T> int insert(T[] entities, boolean withId) {
+    public <T> int insertArray(T[] entities, boolean withId) {
         if (!withId) {
             for (int i = 0; i < entities.length; i++) {
                 BeanHelper.setId(entities[i], new UUID().toString());
@@ -429,7 +378,7 @@ public class BaseDao {
      * @param <T>        实体类
      * @return 影响的行数
      */
-    public <T> int insert(List<T> entityList, boolean withId) {
+    public <T> int insertList(List<T> entityList, boolean withId) {
 
         if (!withId) {
             for (T entity : entityList) {
@@ -599,7 +548,7 @@ public class BaseDao {
      * @param <T>      实体类
      * @return 行数
      */
-    public <T> int update(T[] entities, String[] cols, boolean include) {
+    public <T> int updateArray(T[] entities, String[] cols, boolean include) {
         notNull(entities);
 
         int effectedRows = 0;
@@ -634,7 +583,7 @@ public class BaseDao {
      * @param <T>
      * @return
      */
-    public <T> int update(List<T> pojoList, String[] cols, boolean include) {
+    public <T> int updateList(List<T> pojoList, String[] cols, boolean include) {
         return update(pojoList.toArray(new BaseEntity[pojoList.size()]), cols, include);
     }
 
@@ -676,8 +625,8 @@ public class BaseDao {
         return update(entity, null, true);
     }
 
-    public <T> int update(T[] entities) {
-        return update(entities, null, true);
+    public <T> int updateArray(T[] entities) {
+        return updateArray(entities, null, true);
     }
 
     /**
@@ -689,7 +638,7 @@ public class BaseDao {
      * @param <T>
      * @return
      */
-    public <T> int update(List<T> entityList) {
+    public <T> int updateList(List<T> entityList) {
         return update(entityList.toArray(new BaseEntity[entityList.size()]));
     }
 
@@ -725,7 +674,7 @@ public class BaseDao {
      * @param <T>      实体类
      * @return 行数
      */
-    public <T> int updateNotVersion(T[] entities, String[] cols, boolean include) {
+    public <T> int updateArrayNotVersion(T[] entities, String[] cols, boolean include) {
         notNull(entities);
 
         int effectedRows = 0;
@@ -746,15 +695,15 @@ public class BaseDao {
     }
 
     public <T> int updateNotVersion(T entity) {
-        return updateNotVersion(new Object[]{entity}, null, true);
+        return updateArrayNotVersion(new Object[]{entity}, null, true);
     }
 
-    public <T> int updateNotVersion(T[] entities) {
-        return updateNotVersion(entities, null, true);
+    public <T> int updateArrayNotVersion(T[] entities) {
+        return updateArrayNotVersion(entities, null, true);
     }
 
-    public <T> int updateNotVersion(List<T> entityList) {
-        return updateNotVersion(entityList.toArray(new BaseEntity[entityList.size()]), null, true);
+    public <T> int updateListNotVersion(List<T> entityList) {
+        return updateArrayNotVersion(entityList.toArray(new BaseEntity[entityList.size()]), null, true);
     }
 
     /**
@@ -779,9 +728,6 @@ public class BaseDao {
         return updateNotVersion(entity);
 
     }
-
-
-
 
     /**
      * 条件更新
@@ -812,10 +758,10 @@ public class BaseDao {
      * @param <T>
      * @return
      */
-    public <T> int updateByClause(T[] entities, String[] cols, boolean include, String clause, Object... params) {
+    public <T> int updateArrayByClause(T[] entities, String[] cols, boolean include, String clause, Object... params) {
         notNull(entities);
-
-        return 0;
+        throw new BusinessException("TO BE DONE");
+        //return 0;
 
     }
 
@@ -847,8 +793,8 @@ public class BaseDao {
      * @param <T>        实体类
      * @return 影响行数
      */
-    public <T> int delete(List<T> entityList) {
-        return delete(entityList.toArray(new Object[entityList.size()]));
+    public <T> int deleteList(List<T> entityList) {
+        return deleteArray(entityList.toArray(new Object[entityList.size()]));
     }
 
     /**
@@ -858,8 +804,8 @@ public class BaseDao {
      * @param <T>      实体类
      * @return 记录行数
      */
-    public <T> int delete(T[] entities) {
-        return delete(entities, true);
+    public <T> int deleteArray(T[] entities) {
+        return deleteArray(entities, true);
     }
 
     /**
@@ -881,7 +827,7 @@ public class BaseDao {
      * @return 记录行数
      */
     public <T> int deleteNotVersion(T[] entities) {
-        return delete(entities, false);
+        return deleteArray(entities, false);
     }
 
     protected <T> int delete(T entity, boolean withVersion) {
@@ -895,7 +841,7 @@ public class BaseDao {
         return jdbcTemplate.update(sql, batchArgs.get(0));
     }
 
-    protected <T> int delete(T[] entities, boolean withVersion) {
+    protected <T> int deleteArray(T[] entities, boolean withVersion) {
         notNull(entities);
 
         if (DBType.ORACLE == getDbType()) {
@@ -908,9 +854,6 @@ public class BaseDao {
         //返回错误的行数
         return sum(jdbcTemplate.batchUpdate(SQLUtils.format(sql, getDbTypeString()), batchArgs));
     }
-
-
-
 
     /**
      * 根据条件/排序语句删除
@@ -1108,19 +1051,6 @@ public class BaseDao {
 
 
     /****************************************************************************/
-
-    /*************************
-     * criteria query methods
-     ***************************/
-    /**
-     * @param clazz 实体
-     * @param <T>   实体类
-     * @return builder
-     */
-    @Deprecated
-    public <T> CriteriaBuilder<T> getBuilder(Class<T> clazz) {
-        return new CriteriaBuilder<T>(this, clazz);
-    }
 
     /************************* helper method and others ***********************/
 

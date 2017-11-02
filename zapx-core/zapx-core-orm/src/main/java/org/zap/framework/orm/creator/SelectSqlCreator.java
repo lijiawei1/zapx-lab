@@ -3,7 +3,6 @@ package org.zap.framework.orm.creator;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zap.framework.module.auth.entity.Menu;
 import org.zap.framework.orm.compiler.BeanProperty;
 import org.zap.framework.orm.compiler.JoinProperty;
 import org.zap.framework.orm.compiler.PreCompiler;
@@ -620,14 +619,4 @@ public class SelectSqlCreator extends BaseCreator {
 
         return createSql;
     }
-
-    public static void main(String[] args) throws IllegalAccessException {
-        SelectSqlCreator creator = SelectSqlCreator.getInstance();
-//		logger.debug(creator.createSql(TestVo.class, null).toString());
-//		logger.debug(creator.createSql(TestVo.class, new String[] { "id", "char_field"  }).toString());
-//		logger.debug(creator.createSql(User.class, null).toString());
-
-        logger.debug(creator.createSortByClauseSql(Menu.class, new String[]{"no"}, "", false).toString());
-    }
-
 }

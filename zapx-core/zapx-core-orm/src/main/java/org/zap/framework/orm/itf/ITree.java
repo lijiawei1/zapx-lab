@@ -10,10 +10,10 @@ import java.util.List;
  */
 public interface ITree<T> {
 	
-	public String getId();
+	String getId();
 	
-	public String getPid();
+	String getPid();
 	
-	public List<T> getChildren();
+	List<T> getChildren();
 
 }
