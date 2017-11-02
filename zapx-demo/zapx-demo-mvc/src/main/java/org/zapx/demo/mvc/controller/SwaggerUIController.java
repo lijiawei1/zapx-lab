@@ -26,7 +26,6 @@ public class SwaggerUIController {
     @RequestMapping(value = "/user/add", method = RequestMethod.POST)
 
     @ApiOperation(value = "测试SwaggerUI接口文档")
-    @ApiImplicitParam(name = "data", value = "用户详细实体user", required = true, dataType = "MvcUser")
     @ApiResponses({
             @ApiResponse(code = 201, message = "创建成功,返回创建数据的ID"),
             @ApiResponse(code = 401, message = "未授权"),

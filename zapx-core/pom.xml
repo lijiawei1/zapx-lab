@@ -15,6 +15,7 @@
         <module>zapx-core-dao</module>
         <module>zapx-core-controller</module>
         <module>zapx-core-common</module>
+        <module>zapx-core-orm</module>
     </modules>
 
 
