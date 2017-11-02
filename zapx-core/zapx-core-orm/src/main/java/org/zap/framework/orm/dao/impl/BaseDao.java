@@ -1145,6 +1145,9 @@ public class BaseDao implements IBaseDao {
                 return DBType.MYSQL;
             } else if (databaseProductName.contains(DBType.MICROSOFT.toString())) {
                 return DBType.MICROSOFT;
+            } else if (databaseProductName.contains(DBType.HSQL.toString())) {
+                //H2兼容模式
+                return DBType.MYSQL;
             } else {
                 throw new DaoException("Unsupported Database Type:" + databaseProductName);
             }
@@ -1193,6 +1196,13 @@ public class BaseDao implements IBaseDao {
 
     public LobHandler getLobHandler() {
         return lobHandler;
+    }
+
+    public BaseDao() {
+    }
+
+    public BaseDao(DataSource dataSource) {
+        setDataSource(dataSource);
     }
 
     /**

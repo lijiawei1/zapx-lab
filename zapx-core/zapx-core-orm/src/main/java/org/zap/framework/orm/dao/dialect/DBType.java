@@ -12,6 +12,8 @@ public enum DBType {
 	//MICROSOFT SQL SERVER
 	MICROSOFT,
 
-	ORACLE;
-	
+	ORACLE,
+
+	HSQL
+
 }
