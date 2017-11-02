@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: oracle.jdbc.OracleDriver
+        url: jdbc:oracle:thin:@192.168.0.221:1521:orcl
+        username: tmsdev06
+        password: tmsdev06
