@@ -18,7 +18,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 
-@Component("customObjectMapper")
 public class CustomObjectMapper extends ObjectMapper {
 
     /**
