@@ -1148,6 +1148,8 @@ public class BaseDao implements IBaseDao {
             } else if (databaseProductName.contains(DBType.HSQL.toString())) {
                 //H2兼容模式
                 return DBType.MYSQL;
+            } else if (databaseProductName.contains(DBType.H2.toString())) {
+                return DBType.MYSQL;
             } else {
                 throw new DaoException("Unsupported Database Type:" + databaseProductName);
             }

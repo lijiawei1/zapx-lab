@@ -14,6 +14,8 @@ public enum DBType {
 
 	ORACLE,
 
-	HSQL
+	HSQL,
+
+	H2
 
 }
