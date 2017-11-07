@@ -14,5 +14,13 @@
     <modules>
         <module>zapx-demo-mvc</module>
         <module>zapx-demo-dao</module>
+        <module>zapx-demo-study</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+    </dependencies>
 </project>
