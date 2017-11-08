@@ -1,5 +1,6 @@
 package org.zap.framework.orm.dao;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.zap.framework.orm.creator.ColumnFilter;
 import org.zap.framework.orm.criteria.Query;
@@ -134,5 +135,9 @@ public interface IBaseDao {
     <T> List<T> query(String sql, RowMapper<T> rowMapper);
 
     <T> Query<T> getQuery(Class<T> clazz);
+
+    JdbcTemplate getJdbcTemplate();
+
+    String getDbTypeString();
 
 }
