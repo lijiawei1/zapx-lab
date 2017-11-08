@@ -16,7 +16,7 @@
  *
  */
 
-package org.zapx.web.tests;
+package org.zap.framework.dao.tests;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
