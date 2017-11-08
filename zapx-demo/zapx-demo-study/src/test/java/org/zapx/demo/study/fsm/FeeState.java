@@ -16,12 +16,9 @@ public enum FeeState {
     INIT {
         @Override
         void next(FeeFsm ffsm) {
+            System.out.println("----------------------------------------------");
             exit(ffsm);
-            if (ffsm.isArrivalInEvening()) {
-                ffsm.state = EVE_FREE;
-            } else {
-                ffsm.state = MOR_CHARGE;
-            }
+            ffsm.state = (ffsm.isArrivalInEvening() ? EVE_START : MOR_START);
             entry(ffsm);
             ffsm.state.next(ffsm);
         }
@@ -31,67 +28,61 @@ public enum FeeState {
         @Override
         void next(FeeFsm ffsm) {
             exit(ffsm);
-
-            ffsm.state = END;
-            entry(ffsm);
-
-            //停止计算
+            //停止计算，输出状态
+            System.out.println(ffsm);
         }
     }
     /**
-     * 晚间时段
+     * 晚间免费时段
      */
-    , EVE_FREE {
+    , EVE_START {
         @Override
         void next(FeeFsm ffsm) {
-
             exit(ffsm);
-
             //计算晚间时间是否免费
-            if (ffsm.isEndInEvening()) {
-                ffsm.state = END;
-            } else {
-                ffsm.state = MOR_CHARGE;
-            }
-
+            ffsm.state = (ffsm.isEndInEveningStart() ? END : MOR_CHARGE);
             entry(ffsm);
             ffsm.state.next(ffsm);
         }
     }
+    , EVE_FREE {
+        @Override
+        void next(FeeFsm ffsm) {
+            exit(ffsm);
+            //计算晚间时间是否免费
+            ffsm.state = (ffsm.isEndInEvening() ? END : MOR_CHARGE);
+            entry(ffsm);
+            ffsm.state.next(ffsm);
+        }
+    }
+
     /**
-     * 时间收费时段
+     * 早间收费时段
      */
     , MOR_CHARGE {
         @Override
         void next(FeeFsm ffsm) {
-
             exit(ffsm);
-
-            if (ffsm.isEndInMorning()) {
-                ffsm.state = EVE_FREE;
-            } else {
-                ffsm.state = END;
-            }
-
+            ffsm.state = ffsm.isEndInMorning() ? END : EVE_FREE;
             entry(ffsm);
             ffsm.state.next(ffsm);
-
         }
     }
     /**
-     * 早间免费时段
+     * 早间免费4小时时段
      */
-    , MOR_FREE {
+    , MOR_START {
         @Override
         void next(FeeFsm ffsm) {
             exit(ffsm);
+            ffsm.state = ffsm.isEndInMorningStart() ? END : EVE_FREE;
+            entry(ffsm);
             ffsm.state.next(ffsm);
         }
     };
 
-
     void entry(FeeFsm ffsm) {
-        System.out.print("->" + ffsm.state.name());
+        System.out.println("  " + ffsm + "->" + ffsm.state.name());
     }
 
     void exit(FeeFsm ffsm) {

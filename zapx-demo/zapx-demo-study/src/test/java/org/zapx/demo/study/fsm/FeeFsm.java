@@ -1,7 +1,6 @@
 package org.zapx.demo.study.fsm;
 
-import org.junit.Test;
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +28,17 @@ public class FeeFsm {
      */
     long next_min_left = 0L;
     long next_min_yc = 0L;
+    /**
+     * 压车天数
+     */
+    long next_day_yc = 0L;
     long next_amount = 0L;
+
+    /**
+     * 工作时间长度
+     */
+    final long MORNING_TIME_LONG = LocalTime.of(8, 0).until(LocalTime.of(20, 0), ChronoUnit.MINUTES);
+
 
     /**
      *
@@ -50,19 +59,18 @@ public class FeeFsm {
      */
     public boolean isArrivalInEvening() {
         LocalTime t_arrival = const_dt_arrival.toLocalTime();
-        return t_arrival.isAfter(LocalTime.of(20, 0))
-                && t_arrival.isBefore(LocalTime.of(8, 0));
+        return t_arrival.isAfter(LocalTime.of(19, 59, 59))
+                || t_arrival.isBefore(LocalTime.of(8, 0, 1));
     }
 
     /**
-     * 工作时间长度
+     *
+     * @return
      */
-    final long MORNING_TIME_LONG = LocalTime.of(8, 0).until(LocalTime.of(20, 0), ChronoUnit.MINUTES);
-
-    public boolean isEndInEvening() {
+    public boolean isEndInEveningStart() {
 
         long min_until = const_dt_arrival.toLocalTime()
-                .until(LocalTime.of(24, 0), ChronoUnit.MINUTES) +
+                .until(LocalTime.of(23, 59, 59), ChronoUnit.MINUTES) + 1 +
                 8 * 60;
 
         if (next_min_left <= min_until) {
@@ -73,36 +81,79 @@ public class FeeFsm {
         return false;
     }
 
+    public boolean isEndInEvening() {
+        boolean end = next_min_left <= MORNING_TIME_LONG;
+        long min = Math.min(next_min_left, MORNING_TIME_LONG);
+        next_min_left -= min;
+        return end;
+    }
+
+    /**
+     * 早间结束，免4小时
+     *
+     * @return
+     */
+    public boolean isEndInMorningStart() {
+
+        long min_until = const_dt_arrival.toLocalTime()
+                .until(LocalTime.of(20, 0, 0), ChronoUnit.MINUTES);
+
+        boolean end = next_min_left <= min_until;
+        long min = Math.min(next_min_left, min_until);
+
+        //在早间结束
+        if (min > 60 * 4) {
+            //小于4小时，免费
+            //开始计费
+            next_min_left -= min;
+            min -= 60 * 4;
+
+            long amount = roundHour(min) * PRICE_PER_HOUR;
+            if (amount < MAX_CHARGE_PER_DAY) {
+                next_min_yc += min;
+            } else {
+                amount = MAX_CHARGE_PER_DAY;
+                //压车天数
+                next_day_yc++;
+            }
+
+            next_amount += amount;
+        }
+
+        return end;
+    }
+
     public boolean isEndInMorning() {
 
-        if (next_min_left <= MORNING_TIME_LONG) {
+        boolean end = next_min_left <= MORNING_TIME_LONG;
+        long min = Math.min(next_min_left, MORNING_TIME_LONG);
+        long amount = Math.min(roundHour(min) * PRICE_PER_HOUR, MAX_CHARGE_PER_DAY);
 
-            //早上8点开始的时段
-            if (next_min_yc == 0) {
-                //早上8点开始的时间段开始是免4小时
-                if (next_min_left > 60 * 4) {
-                    next_min_yc += (next_min_left - 4 * 60);
-                    //大于4小时
-                    long round = Math.round(((double) next_min_yc) / 60.0);
-                    next_amount += round * PRICE_PER_HOUR;
-                }
-            } else {
-                next_min_yc += next_min_left;
-                long round = Math.round(((double) next_min_left) / 60.0);
-                //一天最大收费
-                next_amount += Math.min(round * PRICE_PER_HOUR, MAX_CHARGE_PER_DAY);
-            }
-            return true;
+        if (amount < MAX_CHARGE_PER_DAY) {
+            next_min_yc += min;
         } else {
-            //早间计费
-            next_min_left -= MORNING_TIME_LONG;
-            //整天时长
-            next_amount += MAX_CHARGE_PER_DAY;
+            next_day_yc++;
         }
-        return false;
+        next_min_left -= min;
+        next_amount += amount;
+        return end;
     }
 
-    public void start() {
-        this.state.next(this);
+    private long roundHour(long min) {
+        return new BigDecimal(((double)min) / 60.0).setScale(0, BigDecimal.ROUND_HALF_DOWN).longValue();
     }
+
+    public FeeFsm start() {
+        this.state.next(this);
+        return this;
+    }
+
+    public String toString() {
+        return String.format("[压车: %d天 %d分, 费用: %d, 剩余分钟: %d]", next_day_yc, next_min_yc, next_amount, next_min_left);
+    }
+
+    public long getNext_amount() {
+        return next_amount;
+    }
+
 }
