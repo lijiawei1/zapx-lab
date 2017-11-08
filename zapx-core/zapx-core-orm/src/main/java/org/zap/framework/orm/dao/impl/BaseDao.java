@@ -32,7 +32,7 @@ import org.zap.framework.orm.extractor.BeanListExtractor;
 import org.zap.framework.orm.helper.BeanHelper;
 import org.zap.framework.orm.itf.ITree;
 import org.zap.framework.orm.itf.IUpdateCallBack;
-import org.zap.framework.orm.page.PaginationSupport;
+import org.zap.framework.common.entity.pagination.PaginationSupport;
 
 import javax.sql.DataSource;
 import java.sql.*;

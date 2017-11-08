@@ -1,7 +1,7 @@
 package org.zap.framework.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.zap.framework.orm.page.PaginationSupport;
+import org.zap.framework.common.entity.pagination.PaginationSupport;
 
 import java.util.ArrayList;
 import java.util.List;

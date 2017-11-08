@@ -6,7 +6,7 @@ import org.zap.framework.orm.dao.impl.BaseDao;
 import org.zap.framework.orm.extractor.BeanListExtractor;
 import org.zap.framework.orm.extractor.EnhanceMapListExtractor;
 import org.zap.framework.orm.itf.IPaginator;
-import org.zap.framework.orm.page.PaginationSupport;
+import org.zap.framework.common.entity.pagination.PaginationSupport;
 import org.zap.framework.orm.creator.SelectSqlCreator;
 
 import java.util.ArrayList;

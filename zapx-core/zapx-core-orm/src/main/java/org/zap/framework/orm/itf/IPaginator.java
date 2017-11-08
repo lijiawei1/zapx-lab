@@ -1,6 +1,6 @@
 package org.zap.framework.orm.itf;
 
-import org.zap.framework.orm.page.PaginationSupport;
+import org.zap.framework.common.entity.pagination.PaginationSupport;
 
 import java.util.Map;
 

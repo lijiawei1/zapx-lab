@@ -6,7 +6,7 @@ import org.zap.framework.orm.creator.ColumnFilter;
 import org.zap.framework.orm.criteria.Query;
 import org.zap.framework.orm.extractor.Extractor;
 import org.zap.framework.orm.itf.IUpdateCallBack;
-import org.zap.framework.orm.page.PaginationSupport;
+import org.zap.framework.common.entity.pagination.PaginationSupport;
 
 import java.util.List;
 import java.util.Map;
