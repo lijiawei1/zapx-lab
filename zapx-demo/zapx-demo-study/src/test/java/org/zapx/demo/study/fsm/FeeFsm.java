@@ -96,7 +96,7 @@ public class FeeFsm {
     public boolean isEndInMorningStart() {
 
         long min_until = const_dt_arrival.toLocalTime()
-                .until(LocalTime.of(20, 0, 0), ChronoUnit.MINUTES);
+                .until(LocalTime.of(23, 59, 0), ChronoUnit.MINUTES) + 1;
 
         boolean end = next_min_left <= min_until;
         long min = Math.min(next_min_left, min_until);
