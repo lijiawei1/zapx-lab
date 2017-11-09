@@ -67,11 +67,11 @@ public class FsmTest {
     @Test
     public void testMultiDays() {
         FeeFsm start1 = new FeeFsm("2017-10-13 20:00:00", "2017-10-16 22:00:00").start();
-        Assert.assertEquals(start1.getNext_amount(), 3600, 0.00001);
+        Assert.assertEquals(3600, start1.getNext_amount(), 0.00001);
 
         //240+1200+1200+1200
         FeeFsm start2 = new FeeFsm("2017-10-13 14:00:00", "2017-10-16 22:30:00").start();
-        Assert.assertEquals(start2.getNext_amount(), 4320, 0.00001);
+        Assert.assertEquals(4320, start2.getNext_amount(), 0.00001);
 
     }
 }

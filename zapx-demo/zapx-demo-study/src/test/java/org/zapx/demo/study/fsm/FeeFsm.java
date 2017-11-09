@@ -37,7 +37,8 @@ public class FeeFsm {
     /**
      * 工作时间长度
      */
-    final long MORNING_TIME_LONG = LocalTime.of(8, 0).until(LocalTime.of(20, 0), ChronoUnit.MINUTES);
+    final long MORNING_TIME_LONG = 16 * 60;
+    final long EVENING_TIME_LONG = 8 * 60;
 
 
     /**
@@ -82,8 +83,8 @@ public class FeeFsm {
     }
 
     public boolean isEndInEvening() {
-        boolean end = next_min_left <= MORNING_TIME_LONG;
-        long min = Math.min(next_min_left, MORNING_TIME_LONG);
+        boolean end = next_min_left <= EVENING_TIME_LONG;
+        long min = Math.min(next_min_left, EVENING_TIME_LONG);
         next_min_left -= min;
         return end;
     }
