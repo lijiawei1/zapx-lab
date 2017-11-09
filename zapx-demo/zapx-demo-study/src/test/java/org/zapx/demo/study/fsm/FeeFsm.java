@@ -16,28 +16,52 @@ public class FeeFsm {
     /**
      * 初始状态
      */
+    /**
+     * 到达时间
+     */
     final LocalDateTime const_dt_arrival;
+    /**
+     * 离开时间
+     */
     final LocalDateTime const_dt_leave;
+    /**
+     * 总停留时长（分钟）
+     */
     final long const_min_diff;
 
+    /**
+     * 每天最大费用
+     */
     final long MAX_CHARGE_PER_DAY = 1200;
+    /**
+     * 超时费用单价
+     */
     final long PRICE_PER_HOUR = 120;
 
     /**
-     * 进入下状态的变量
+     * 剩余停留时长
      */
     long next_min_left = 0L;
+    /**
+     * 计费超时时长（分钟）
+     */
     long next_min_yc = 0L;
     /**
-     * 压车天数
+     * 计费超时时长（天）
      */
     long next_day_yc = 0L;
+    /**
+     * 累计费用
+     */
     long next_amount = 0L;
 
     /**
-     * 工作时间长度
+     * 日间计费时间长度
      */
     final long MORNING_TIME_LONG = 16 * 60;
+    /**
+     * 夜间免费时长
+     */
     final long EVENING_TIME_LONG = 8 * 60;
 
 
@@ -70,20 +94,29 @@ public class FeeFsm {
      */
     public boolean isEndInEveningStart() {
 
+        //晚20时后进场的免费时长
         long min_until = const_dt_arrival.toLocalTime()
                 .until(LocalTime.of(23, 59, 59), ChronoUnit.MINUTES) + 1 +
                 8 * 60;
 
         if (next_min_left <= min_until) {
+            //剩余停留时间在免费时长内，进入END状态
             return true;
         } else {
+            //剩余更新停留时间，进入MOR_CHARGE状态
             next_min_left -= min_until;
         }
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isEndInEvening() {
+        //剩余停留时间在时长内
         boolean end = next_min_left <= EVENING_TIME_LONG;
+        //更新停留时间
         long min = Math.min(next_min_left, EVENING_TIME_LONG);
         next_min_left -= min;
         return end;
@@ -96,17 +129,19 @@ public class FeeFsm {
      */
     public boolean isEndInMorningStart() {
 
+        //早8时后入场的计费时长
         long min_until = const_dt_arrival.toLocalTime()
                 .until(LocalTime.of(23, 59, 0), ChronoUnit.MINUTES) + 1;
 
+        //是否24时前结束
         boolean end = next_min_left <= min_until;
         long min = Math.min(next_min_left, min_until);
 
-        //在早间结束
+        //在早间结束，大于4小时计费
         if (min > 60 * 4) {
-            //小于4小时，免费
-            //开始计费
+            //开始计费，更新剩余停留时间
             next_min_left -= min;
+            //纳入计算的超时时长
             min -= 60 * 4;
 
             long amount = roundHour(min) * PRICE_PER_HOUR;
@@ -114,16 +149,21 @@ public class FeeFsm {
                 next_min_yc += min;
             } else {
                 amount = MAX_CHARGE_PER_DAY;
-                //压车天数
+                //若大于当天最大费用，将压车时长记录到天数
                 next_day_yc++;
             }
-
+            //累加费用
             next_amount += amount;
         }
 
         return end;
     }
 
+    /**
+     * 是否早间结束，8时开始计费
+     *
+     * @return
+     */
     public boolean isEndInMorning() {
 
         boolean end = next_min_left <= MORNING_TIME_LONG;
@@ -135,11 +175,18 @@ public class FeeFsm {
         } else {
             next_day_yc++;
         }
+        //更新剩余停留时长
         next_min_left -= min;
+        //累加费用
         next_amount += amount;
         return end;
     }
 
+    /**
+     * 分钟舍入小时，30分钟以上当1小时
+     * @param min
+     * @return
+     */
     private long roundHour(long min) {
         return new BigDecimal(((double)min) / 60.0).setScale(0, BigDecimal.ROUND_HALF_DOWN).longValue();
     }
