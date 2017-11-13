@@ -276,7 +276,7 @@ public class BaseService {
      * @return
      */
     public <T> int deleteArray(T[] entities) {
-        return checkOptimisticLock(baseDao.delete(entities), entities.length);
+        return checkOptimisticLock(baseDao.deleteArray(entities), entities.length);
     }
 
     /**
@@ -289,7 +289,7 @@ public class BaseService {
      * @return
      */
     public <T> int deleteList(List<T> entityList) {
-        return checkOptimisticLock(baseDao.delete(entityList), entityList.size());
+        return checkOptimisticLock(baseDao.deleteList(entityList), entityList.size());
     }
 
     public <T> int deleteNotVersion(T entity) {
