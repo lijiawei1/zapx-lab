@@ -6,7 +6,7 @@ import org.zap.framework.orm.extractor.EnhanceMapListExtractor;
 import org.zap.framework.orm.itf.IPaginator;
 import org.zap.framework.orm.creator.SelectSqlCreator;
 import org.zap.framework.orm.extractor.BeanListExtractor;
-import org.zap.framework.orm.page.PaginationSupport;
+import org.zap.framework.common.entity.pagination.PaginationSupport;
 
 import java.util.ArrayList;
 import java.util.Map;

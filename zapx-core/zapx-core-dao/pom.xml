@@ -11,5 +11,17 @@
 
     <artifactId>zapx-core-dao</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.zapx</groupId>
+            <artifactId>zapx-core-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zapx</groupId>
+            <artifactId>zapx-core-orm</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

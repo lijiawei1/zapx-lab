@@ -1,11 +1,12 @@
 package org.zap.framework.orm.dao;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.zap.framework.orm.creator.ColumnFilter;
 import org.zap.framework.orm.criteria.Query;
 import org.zap.framework.orm.extractor.Extractor;
 import org.zap.framework.orm.itf.IUpdateCallBack;
-import org.zap.framework.orm.page.PaginationSupport;
+import org.zap.framework.common.entity.pagination.PaginationSupport;
 
 import java.util.List;
 import java.util.Map;
@@ -134,5 +135,9 @@ public interface IBaseDao {
     <T> List<T> query(String sql, RowMapper<T> rowMapper);
 
     <T> Query<T> getQuery(Class<T> clazz);
+
+    JdbcTemplate getJdbcTemplate();
+
+    String getDbTypeString();
 
 }

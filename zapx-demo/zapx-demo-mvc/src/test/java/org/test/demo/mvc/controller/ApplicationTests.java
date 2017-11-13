@@ -3,11 +3,10 @@ package org.test.demo.mvc.controller;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.zapx.demo.mvc.controller.MvcUserController;
-import org.zapx.web.tests.SimpleWebApplicationTests;
+import org.zap.framework.dao.tests.SimpleWebApplicationTests;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

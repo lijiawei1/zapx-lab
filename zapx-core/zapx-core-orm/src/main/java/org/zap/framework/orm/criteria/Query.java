@@ -14,7 +14,7 @@ import org.zap.framework.orm.exception.ExEnum;
 import org.zap.framework.orm.extractor.BeanListExtractor;
 import org.zap.framework.orm.extractor.MapListExtractor;
 import org.zap.framework.orm.helper.BeanHelper;
-import org.zap.framework.orm.page.PaginationSupport;
+import org.zap.framework.common.entity.pagination.PaginationSupport;
 import org.zap.framework.orm.sql.*;
 import org.zap.framework.orm.sql.criteria.*;
 import org.zap.framework.orm.criteria.call.CountFunction;

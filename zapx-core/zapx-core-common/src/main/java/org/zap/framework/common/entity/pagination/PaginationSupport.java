@@ -1,4 +1,4 @@
-package org.zap.framework.orm.page;
+package org.zap.framework.common.entity.pagination;
 
 import java.util.ArrayList;
 import java.util.List;
