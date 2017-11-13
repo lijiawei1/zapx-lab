@@ -275,7 +275,7 @@ public class BaseService {
      * @param <T>      继承基础实体
      * @return
      */
-    public <T> int delete(T[] entities) {
+    public <T> int deleteArray(T[] entities) {
         return checkOptimisticLock(baseDao.delete(entities), entities.length);
     }
 
@@ -288,7 +288,7 @@ public class BaseService {
      * @param <T>        继承基础实体
      * @return
      */
-    public <T> int delete(List<T> entityList) {
+    public <T> int deleteList(List<T> entityList) {
         return checkOptimisticLock(baseDao.delete(entityList), entityList.size());
     }
 
@@ -296,11 +296,11 @@ public class BaseService {
         return baseDao.delete(entity);
     }
 
-    public <T> int deleteNotVersion(T[] entities) {
+    public <T> int deleteArrayNotVersion(T[] entities) {
         return baseDao.delete(entities);
     }
 
-    public <T> int deleteNotVersion(List<T> entityList) {
+    public <T> int deleteListNotVersion(List<T> entityList) {
         return baseDao.delete(entityList);
     }
 
