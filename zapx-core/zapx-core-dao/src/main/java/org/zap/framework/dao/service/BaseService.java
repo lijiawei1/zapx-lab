@@ -146,7 +146,7 @@ public class BaseService {
      * @param entities
      * @param withId
      */
-    public <T> int insert(T[] entities, boolean withId) {
+    public <T> int insertArray(T[] entities, boolean withId) {
         return baseDao.insertArray(entities, withId);
     }
 
@@ -157,7 +157,7 @@ public class BaseService {
      * @param withId     是否有主键
      * @return
      */
-    public <T> int insert(List<T> entityList, boolean withId) {
+    public <T> int insertList(List<T> entityList, boolean withId) {
         return baseDao.insertList(entityList, withId);
     }
 
@@ -175,7 +175,7 @@ public class BaseService {
      *
      * @param entities
      */
-    public <T> int update(T[] entities) {
+    public <T> int updateArray(T[] entities) {
         return checkOptimisticLock(baseDao.update(entities), entities.length);
     }
 
@@ -197,7 +197,7 @@ public class BaseService {
      * @param cols     字段
      * @param include  如果true：只更新传入的cols字段；如果false：更新除了传入的cols的其它业务字段
      */
-    public <T> int update(T[] entities, String[] cols, boolean include) {
+    public <T> int updateArray(T[] entities, String[] cols, boolean include) {
         //检查数据一致性
         return checkOptimisticLock(baseDao.update(entities, cols, include), entities.length);
     }
@@ -208,7 +208,7 @@ public class BaseService {
      * @param entities 待更新VO
      * @param cols     只更新指定字段
      */
-    public <T> int updatePartFields(T[] entities, String[] cols) {
+    public <T> int updateArrayPartFields(T[] entities, String[] cols) {
         return checkOptimisticLock(baseDao.update(entities, cols, true), entities.length);
     }
 
@@ -293,15 +293,15 @@ public class BaseService {
     }
 
     public <T> int deleteNotVersion(T entity) {
-        return baseDao.delete(entity);
+        return baseDao.deleteNotVersion(entity);
     }
 
     public <T> int deleteArrayNotVersion(T[] entities) {
-        return baseDao.delete(entities);
+        return baseDao.deleteArray(entities);
     }
 
     public <T> int deleteListNotVersion(List<T> entityList) {
-        return baseDao.delete(entityList);
+        return baseDao.deleteNotVersion(entityList);
     }
 
 
@@ -326,16 +326,16 @@ public class BaseService {
         return baseDao.updateNotVersion(entities);
     }
 
-    public <T> int updateNotVersion(T[] entities) {
-        return baseDao.updateNotVersion(entities);
+    public <T> int updateArrayNotVersion(T[] entities) {
+        return baseDao.updateArrayNotVersion(entities);
     }
 
     public <T> int updateNotVersion(T entity, String[] cols, boolean include) {
         return baseDao.updateNotVersion(entity, cols, include);
     }
 
-    public <T> int updateNotVersion(T[] entities, String[] cols, boolean include) {
-        return baseDao.updateNotVersion(entities, cols, include);
+    public <T> int updateArrayNotVersion(T[] entities, String[] cols, boolean include) {
+        return baseDao.updateArrayNotVersion(entities, cols, include);
     }
 
     /****

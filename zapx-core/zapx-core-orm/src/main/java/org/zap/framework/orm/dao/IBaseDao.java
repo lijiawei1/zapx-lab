@@ -114,7 +114,7 @@ public interface IBaseDao {
 
     <T> int deleteNotVersion(T entity);
 
-    <T> int deleteNotVersion(T[] entities);
+    <T> int deleteArrayNotVersion(T[] entities);
 
     int deleteByClause(Class<?> clazz, String clause, Object... params);
 

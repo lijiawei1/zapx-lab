@@ -826,7 +826,7 @@ public class BaseDao implements IBaseDao {
      * @param <T>      实体类
      * @return 记录行数
      */
-    public <T> int deleteNotVersion(T[] entities) {
+    public <T> int deleteArrayNotVersion(T[] entities) {
         return deleteArray(entities, false);
     }
 
