@@ -33,6 +33,14 @@ public class BusiService extends BaseService {
 	@Autowired
 	CustomObjectMapper customObjectMapper;
 
+	public CustomObjectMapper getCustomObjectMapper() {
+		return customObjectMapper;
+	}
+
+	public void setCustomObjectMapper(CustomObjectMapper customObjectMapper) {
+		this.customObjectMapper = customObjectMapper;
+	}
+
 	/**
 	 * @param clazz
 	 * @param where
