@@ -28,9 +28,6 @@ import java.util.List;
 public class BusiService extends BaseService {
 
 	@Autowired
-	protected IBaseDao baseDao;
-
-	@Autowired
 	CustomObjectMapper customObjectMapper;
 
 	public CustomObjectMapper getCustomObjectMapper() {

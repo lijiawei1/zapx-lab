@@ -347,7 +347,7 @@ public class BaseService {
         return baseDao.getQuery(clazz);
     }
 
-    private IBaseDao baseDao;
+    protected IBaseDao baseDao;
 
     private static Logger logger = LoggerFactory.getLogger(BaseService.class);
 
