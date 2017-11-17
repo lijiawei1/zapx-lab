@@ -176,7 +176,7 @@ public class BaseService {
      * @param entities
      */
     public <T> int updateArray(T[] entities) {
-        return checkOptimisticLock(baseDao.update(entities), entities.length);
+        return checkOptimisticLock(baseDao.updateArray(entities), entities.length);
     }
 
     /**
@@ -199,7 +199,7 @@ public class BaseService {
      */
     public <T> int updateArray(T[] entities, String[] cols, boolean include) {
         //检查数据一致性
-        return checkOptimisticLock(baseDao.update(entities, cols, include), entities.length);
+        return checkOptimisticLock(baseDao.updateArray(entities, cols, include), entities.length);
     }
 
     /**
@@ -209,7 +209,7 @@ public class BaseService {
      * @param cols     只更新指定字段
      */
     public <T> int updateArrayPartFields(T[] entities, String[] cols) {
-        return checkOptimisticLock(baseDao.update(entities, cols, true), entities.length);
+        return checkOptimisticLock(baseDao.updateArray(entities, cols, true), entities.length);
     }
 
     /**
