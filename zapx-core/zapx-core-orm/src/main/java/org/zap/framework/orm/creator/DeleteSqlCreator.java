@@ -125,10 +125,7 @@ public class DeleteSqlCreator extends BaseCreator {
 		try {
 			for (int i = 0; i < pojos.length; i++) {
 
-				StringBuilder del = new StringBuilder("DELETE FROM ").append(beanProperty.getTableName());
-
-				Object version = beanProperty.getVersionField().get(pojos[i]);
-				del.append(" WHERE ");
+				StringBuilder del = new StringBuilder("DELETE FROM ").append(beanProperty.getTableName()).append(" WHERE ");
 
 				//主键更新条件
 				for (int k = 0; k < primaryKeys.length; k++) {
@@ -138,6 +135,7 @@ public class DeleteSqlCreator extends BaseCreator {
 
 				//版本更新字段
 				if (beanProperty.isVersionControl() && withVersion) {
+					Object version = beanProperty.getVersionField().get(pojos[i]);
 					del.append(beanProperty.getVersionColumn()).append(" = ").append(version);
 				} else {
 					del.replace(del.length() - 4, del.length(), " ");
