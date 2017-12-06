@@ -1189,11 +1189,17 @@ public class BaseDao implements IBaseDao {
         return namedJdbcTemplate;
     }
 
+    @Override
     public JdbcTemplate getJdbcTemplate() {
         if (jdbcTemplate == null) {
             jdbcTemplate = new JdbcTemplate(dataSource);
         }
         return jdbcTemplate;
+    }
+
+    @Override
+    public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+        return namedJdbcTemplate;
     }
 
     public LobHandler getLobHandler() {

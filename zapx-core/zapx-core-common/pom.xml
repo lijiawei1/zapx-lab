@@ -65,6 +65,24 @@
             <artifactId>spring-boot-starter-swagger</artifactId>
             <version>1.4.0.RELEASE</version>
         </dependency>
+
+        <!-- 报表 -->
+        <dependency>
+            <groupId>org.jxls</groupId>
+            <artifactId>jxls</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jxls</groupId>
+            <artifactId>jxls-poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jxls</groupId>
+            <artifactId>jxls-jexcel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jxls</groupId>
+            <artifactId>jxls-reader</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

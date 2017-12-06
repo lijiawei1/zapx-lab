@@ -1,4 +1,4 @@
-package org.zap.test.mvc;
+package org.zap.test.dao;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.junit.Assert;

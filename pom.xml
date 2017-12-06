@@ -51,6 +51,14 @@
                 <scope>import</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Camden.SR5</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!--测试相关-->
             <dependency>
                 <groupId>org.assertj</groupId>
@@ -129,6 +137,45 @@
                 <groupId>com.oracle</groupId>
                 <artifactId>ojdbc14</artifactId>
                 <version>10.2.0.4.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jxls</groupId>
+                <artifactId>jxls</artifactId>
+                <version>2.2.5</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.jxls</groupId>
+                <artifactId>jxls-poi</artifactId>
+                <version>1.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jxls</groupId>
+                <artifactId>jxls-jexcel</artifactId>
+                <version>1.0.3</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.jxls</groupId>
+                <artifactId>jxls-reader</artifactId>
+                <version>2.0.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!--<dependency>-->
