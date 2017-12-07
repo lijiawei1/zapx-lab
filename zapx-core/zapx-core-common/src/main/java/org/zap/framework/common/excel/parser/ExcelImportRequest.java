@@ -41,6 +41,10 @@ public class ExcelImportRequest implements Serializable {
      * 数据起始行
      */
     int data_start_row = 1;
+    /**
+     * 存放下载文件
+     */
+    String upload_path;
 
     public int getHeader_row() {
         return header_row;
@@ -104,5 +108,13 @@ public class ExcelImportRequest implements Serializable {
 
     public void setIgnore_error(boolean ignore_error) {
         this.ignore_error = ignore_error;
+    }
+
+    public String getUpload_path() {
+        return upload_path;
+    }
+
+    public void setUpload_path(String upload_path) {
+        this.upload_path = upload_path;
     }
 }

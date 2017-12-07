@@ -197,10 +197,20 @@ public class ExcelImportEngine<T> {
      * @param cacheKey
      */
     private String writeTempFile(String cacheKey, ExcelHandler handler) {
-        DeployConfig config = (DeployConfig) request.getServletContext().getAttribute("tms_deploy_config");
+
+        String upload_path = "";
+        if (StringUtils.isNotBlank(config.getUpload_path())) {
+            upload_path = config.getUpload_path();
+        } else {
+            DeployConfig config = (DeployConfig) request.getServletContext().getAttribute("deploy_config");
+            if (config == null) {
+                upload_path = config.getSys_upload_path();
+            }
+        }
+
         String contextPath = "/upload/excelTemp";
         String extension = "xls";
-        String uploadPath = config.getSys_upload_path() + "/excelTemp";
+        String uploadPath = upload_path + "/excelTemp";
         String fileName = (System.currentTimeMillis() + RandomUtils.nextLong()) + "." + extension;
         //文件系统绝对路径
         String path = FilenameUtils.concat(uploadPath, fileName);
