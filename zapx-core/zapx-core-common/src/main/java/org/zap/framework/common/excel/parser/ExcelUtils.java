@@ -1,6 +1,5 @@
 package org.zap.framework.common.excel.parser;
 
-import com.fasterxml.jackson.databind.BeanProperty;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.jxls.area.Area;
@@ -18,6 +17,7 @@ import org.zap.framework.common.excel.jxls.MyXlsCommentAreaBuilder;
 import org.zap.framework.exception.BusinessException;
 import org.zap.framework.lang.LDouble;
 import org.zap.framework.util.DateUtils;
+import org.zap.framework.util.Utils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,14 +26,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.jxls.template.SimpleExporter.GRID_TEMPLATE_XLS;
 import static org.jxls.transform.poi.PoiTransformer.POI_CONTEXT_KEY;
@@ -107,7 +106,23 @@ public class ExcelUtils {
         List<ExcelResultWrapper<T>> data = new ArrayList<>();
         result.setData(data);
 
-        Map<String, Field> fieldMap = Stream.of(clazz.getFields()).collect(Collectors.toMap(f -> f.getName(), f -> f));
+        List<Field> fieldList = new ArrayList<>();
+        Class<?> currClazz = clazz;
+
+        while (!currClazz.equals(Object.class)) {
+
+            Field[] declaredFields = currClazz.getDeclaredFields();
+            currClazz = currClazz.getSuperclass();
+            for (int i = 0; i < declaredFields.length; i++) {
+                if (Modifier.isStatic(declaredFields[i].getModifiers())) {
+                    continue;
+                }
+                declaredFields[i].setAccessible(true);
+                fieldList.add(declaredFields[i]);
+            }
+        }
+
+        Map<String, Field> fieldMap = Utils.collection2FieldMap(fieldList, "name", String.class);
 
         //将数据集，转换到实体里
         for (int i = start_row; i < contentRangeData.getRowCount(); i++) {
