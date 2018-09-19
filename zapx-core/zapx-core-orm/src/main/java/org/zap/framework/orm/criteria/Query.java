@@ -2,10 +2,14 @@ package org.zap.framework.orm.criteria;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.zap.framework.common.entity.pagination.PaginationSupport;
 import org.zap.framework.orm.compiler.BeanProperty;
 import org.zap.framework.orm.compiler.JoinProperty;
+import org.zap.framework.orm.compiler.JoinProperty.ColProp;
+import org.zap.framework.orm.compiler.JoinProperty.MainProp;
 import org.zap.framework.orm.compiler.PreCompiler;
 import org.zap.framework.orm.converter.DefaultConverter;
+import org.zap.framework.orm.criteria.call.CountFunction;
 import org.zap.framework.orm.dao.dialect.DBType;
 import org.zap.framework.orm.dao.dialect.PaginatorFactory;
 import org.zap.framework.orm.dao.impl.BaseDao;
@@ -14,10 +18,8 @@ import org.zap.framework.orm.exception.ExEnum;
 import org.zap.framework.orm.extractor.BeanListExtractor;
 import org.zap.framework.orm.extractor.MapListExtractor;
 import org.zap.framework.orm.helper.BeanHelper;
-import org.zap.framework.common.entity.pagination.PaginationSupport;
 import org.zap.framework.orm.sql.*;
 import org.zap.framework.orm.sql.criteria.*;
-import org.zap.framework.orm.criteria.call.CountFunction;
 import org.zap.framework.orm.sql.literal.ParamLiteral;
 
 import java.lang.reflect.Field;
@@ -147,15 +149,15 @@ public class Query<T> {
     }
 
     public Query<T> like(String column, Object value) {
-        return match(column, value, MatchCriteria.LIKE);
+        return match(column, "%"+ StringUtils.trimToEmpty((String)value) +"%", MatchCriteria.LIKE);
     }
 
     public Query<T> leftLike(String column, Object value) {
-        return match(column, value, MatchCriteria.LEFTLIKE);
+        return match(column, "%" + StringUtils.trimToEmpty((String) value), MatchCriteria.LEFTLIKE);
     }
 
     public Query<T> rightLike(String column, Object value) {
-        return match(column, value, MatchCriteria.RIGHTLIKE);
+        return match(column, StringUtils.trimToEmpty((String) value) + "%", MatchCriteria.RIGHTLIKE);
     }
 
     public Query<T> in(String column, Object[] values) {
@@ -471,21 +473,23 @@ public class Query<T> {
         //外键列
         jp = PreCompiler.getInstance().getJoinProperty(clazz);
 
-        //外键信息
-        List<JoinProperty.MainProp> mainPropList = jp.getMainPropList();
+        if (jp != null) {
+            //外键信息
+            List<MainProp> mainPropList = jp.getMainPropList();
 
-        if (mainPropList != null && mainPropList.size() > 0) {
-            for (JoinProperty.MainProp mp : mainPropList) {
-                List<JoinProperty.ColProp> colPropList = mp.getColList();
+            if (mainPropList != null && mainPropList.size() > 0) {
+                for (MainProp mp : mainPropList) {
+                    List<ColProp> colPropList = mp.getColList();
 
-                Table foreignTable = new Table(mp.getTableName(), mp.getTableAlias());
-                select.addLeftCriteria(new LeftJoinCriteria(mainTable, mainTable.getColumn(mp.getForeignKey()), "=", foreignTable, foreignTable.getColumn(mp.getPrimaryKey())));
+                    Table foreignTable = new Table(mp.getTableName(), mp.getTableAlias());
+                    select.addLeftCriteria(new LeftJoinCriteria(mainTable, mainTable.getColumn(mp.getForeignKey()), "=", foreignTable, foreignTable.getColumn(mp.getPrimaryKey())));
 
-                for (JoinProperty.ColProp cp : colPropList) {
+                    for (ColProp cp : colPropList) {
 //					select.addColumn(foreignTable.getColumn(cp.getColumnName(), cp.getFieldName()));
 
-                    //CORP_NAME=OC1.NAME
-                    colsAliasCache.put(StringUtils.upperCase(cp.getFieldName()), StringUtils.upperCase(mp.getTableAlias() + "." + cp.getColumnName()));
+                        //CORP_NAME=OC1.NAME
+                        colsAliasCache.put(StringUtils.upperCase(cp.getFieldName()), StringUtils.upperCase(mp.getTableAlias() + "." + cp.getColumnName()));
+                    }
                 }
             }
         }
@@ -531,17 +535,19 @@ public class Query<T> {
             //外键列
             jp = PreCompiler.getInstance().getJoinProperty(clazz);
 
-            //外键信息
-            List<JoinProperty.MainProp> mainPropList = jp.getMainPropList();
+            if (jp != null) {
+                //外键信息
+                List<MainProp> mainPropList = jp.getMainPropList();
 
-            if (mainPropList != null && mainPropList.size() > 0) {
-                for (JoinProperty.MainProp mp : mainPropList) {
-                    List<JoinProperty.ColProp> colPropList = mp.getColList();
+                if (mainPropList != null && mainPropList.size() > 0) {
+                    for (MainProp mp : mainPropList) {
+                        List<ColProp> colPropList = mp.getColList();
 
-                    Table foreignTable = aliasCache.get(mp.getTableAlias());
+                        Table foreignTable = aliasCache.get(mp.getTableAlias());
 
-                    for (JoinProperty.ColProp cp : colPropList) {
-                        select.addColumn(foreignTable.getColumn(cp.getColumnName(), cp.getFieldName()));
+                        for (ColProp cp : colPropList) {
+                            select.addColumn(foreignTable.getColumn(cp.getColumnName(), cp.getFieldName()));
+                        }
                     }
                 }
             }
