@@ -23,33 +23,19 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jxls</groupId>
-            <artifactId>jxls</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jxls</groupId>
-            <artifactId>jxls-poi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jxls</groupId>
-            <artifactId>jxls-jexcel</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jxls</groupId>
-            <artifactId>jxls-reader</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

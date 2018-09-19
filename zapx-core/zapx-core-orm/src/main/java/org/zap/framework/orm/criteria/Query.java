@@ -471,21 +471,24 @@ public class Query<T> {
         //外键列
         jp = PreCompiler.getInstance().getJoinProperty(clazz);
 
-        //外键信息
-        List<JoinProperty.MainProp> mainPropList = jp.getMainPropList();
+        if (jp != null) {
 
-        if (mainPropList != null && mainPropList.size() > 0) {
-            for (JoinProperty.MainProp mp : mainPropList) {
-                List<JoinProperty.ColProp> colPropList = mp.getColList();
+            //外键信息
+            List<JoinProperty.MainProp> mainPropList = jp.getMainPropList();
 
-                Table foreignTable = new Table(mp.getTableName(), mp.getTableAlias());
-                select.addLeftCriteria(new LeftJoinCriteria(mainTable, mainTable.getColumn(mp.getForeignKey()), "=", foreignTable, foreignTable.getColumn(mp.getPrimaryKey())));
+            if (mainPropList != null && mainPropList.size() > 0) {
+                for (JoinProperty.MainProp mp : mainPropList) {
+                    List<JoinProperty.ColProp> colPropList = mp.getColList();
 
-                for (JoinProperty.ColProp cp : colPropList) {
+                    Table foreignTable = new Table(mp.getTableName(), mp.getTableAlias());
+                    select.addLeftCriteria(new LeftJoinCriteria(mainTable, mainTable.getColumn(mp.getForeignKey()), "=", foreignTable, foreignTable.getColumn(mp.getPrimaryKey())));
+
+                    for (JoinProperty.ColProp cp : colPropList) {
 //					select.addColumn(foreignTable.getColumn(cp.getColumnName(), cp.getFieldName()));
 
-                    //CORP_NAME=OC1.NAME
-                    colsAliasCache.put(StringUtils.upperCase(cp.getFieldName()), StringUtils.upperCase(mp.getTableAlias() + "." + cp.getColumnName()));
+                        //CORP_NAME=OC1.NAME
+                        colsAliasCache.put(StringUtils.upperCase(cp.getFieldName()), StringUtils.upperCase(mp.getTableAlias() + "." + cp.getColumnName()));
+                    }
                 }
             }
         }
@@ -531,17 +534,19 @@ public class Query<T> {
             //外键列
             jp = PreCompiler.getInstance().getJoinProperty(clazz);
 
-            //外键信息
-            List<JoinProperty.MainProp> mainPropList = jp.getMainPropList();
+            if (jp != null) {
+                //外键信息
+                List<JoinProperty.MainProp> mainPropList = jp.getMainPropList();
 
-            if (mainPropList != null && mainPropList.size() > 0) {
-                for (JoinProperty.MainProp mp : mainPropList) {
-                    List<JoinProperty.ColProp> colPropList = mp.getColList();
+                if (mainPropList != null && mainPropList.size() > 0) {
+                    for (JoinProperty.MainProp mp : mainPropList) {
+                        List<JoinProperty.ColProp> colPropList = mp.getColList();
 
-                    Table foreignTable = aliasCache.get(mp.getTableAlias());
+                        Table foreignTable = aliasCache.get(mp.getTableAlias());
 
-                    for (JoinProperty.ColProp cp : colPropList) {
-                        select.addColumn(foreignTable.getColumn(cp.getColumnName(), cp.getFieldName()));
+                        for (JoinProperty.ColProp cp : colPropList) {
+                            select.addColumn(foreignTable.getColumn(cp.getColumnName(), cp.getFieldName()));
+                        }
                     }
                 }
             }
