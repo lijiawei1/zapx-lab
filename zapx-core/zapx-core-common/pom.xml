@@ -44,27 +44,27 @@
             <artifactId>commons-codec</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.eaio.uuid</groupId>
-            <artifactId>uuid</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.eaio.uuid</groupId>-->
+            <!--<artifactId>uuid</artifactId>-->
+        <!--</dependency>-->
 
         <!-- 数据库相关 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.alibaba</groupId>-->
+            <!--<artifactId>druid</artifactId>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc14</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.oracle</groupId>-->
+            <!--<artifactId>ojdbc14</artifactId>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.didispace</groupId>
-            <artifactId>spring-boot-starter-swagger</artifactId>
-            <version>1.4.0.RELEASE</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.didispace</groupId>-->
+            <!--<artifactId>spring-boot-starter-swagger</artifactId>-->
+            <!--<version>1.4.0.RELEASE</version>-->
+        <!--</dependency>-->
 
         <!-- 报表 -->
         <dependency>
