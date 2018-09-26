@@ -14,7 +14,6 @@
     <modules>
         <module>zapx-demo-mvc</module>
         <module>zapx-demo-dao</module>
-        <module>zapx-demo-study</module>
         <module>zapx-demo-oauth2</module>
     </modules>
 
