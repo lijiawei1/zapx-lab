@@ -93,7 +93,7 @@ public class UpdateSqlCreator {
         //检查是否标识注解
         JdbcTable annTable = clazz.getAnnotation(JdbcTable.class);
         if (annTable == null) {
-            throw new DaoException("类型没有注解");
+            throw new DaoException("实体没有表信息注解@JdbcTable");
         }
 
         //获取Class的orm信息

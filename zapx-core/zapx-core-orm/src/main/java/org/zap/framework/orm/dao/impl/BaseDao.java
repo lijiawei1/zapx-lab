@@ -639,7 +639,7 @@ public class BaseDao implements IBaseDao {
      * @return
      */
     public <T> int updateList(List<T> entityList) {
-        return update(entityList.toArray(new BaseEntity[entityList.size()]));
+        return updateArray(entityList.toArray(new BaseEntity[entityList.size()]));
     }
 
     /**

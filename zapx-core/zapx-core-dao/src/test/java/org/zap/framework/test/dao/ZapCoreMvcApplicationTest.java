@@ -1,4 +1,4 @@
-package org.zap.test.dao;
+package org.zap.framework.test.dao;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.junit.Assert;
@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.zap.framework.dao.service.BaseService;
 import org.zap.framework.orm.dao.IBaseDao;
 import org.zap.framework.orm.dao.impl.BaseDao;
-import org.zap.framework.dao.service.BaseService;
 
 import javax.sql.DataSource;
 import java.util.List;

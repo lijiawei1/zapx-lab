@@ -4,6 +4,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zap.framework.orm.dao.IBaseDao;
 import org.zap.framework.orm.dao.impl.BaseDao;
 import org.zap.framework.orm.itf.IPaginator;
 import org.zap.framework.orm.creator.SelectSqlCreator;
@@ -20,9 +21,9 @@ import java.util.Map;
  */
 public class SqlServerPaginator implements IPaginator {
 
-    BaseDao baseDao;
+    IBaseDao baseDao;
 
-    public SqlServerPaginator(BaseDao baseDao) {
+    public SqlServerPaginator(IBaseDao baseDao) {
         this.baseDao = baseDao;
     }
 

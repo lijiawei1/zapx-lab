@@ -2,6 +2,7 @@ package org.zap.framework.orm.dao.dialect;
 
 import com.alibaba.druid.sql.SQLUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.zap.framework.orm.dao.IBaseDao;
 import org.zap.framework.orm.dao.impl.BaseDao;
 import org.zap.framework.orm.extractor.BeanListExtractor;
 import org.zap.framework.orm.extractor.EnhanceMapListExtractor;
@@ -18,9 +19,9 @@ import java.util.Map;
  *
  */
 public class OraclePaginator implements IPaginator {
-	BaseDao baseDao;
+	IBaseDao baseDao;
 	
-	public OraclePaginator(BaseDao baseDao) {
+	public OraclePaginator(IBaseDao baseDao) {
 		this.baseDao = baseDao;
 	}
 

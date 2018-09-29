@@ -1,6 +1,7 @@
 package org.zap.framework.orm.dao.dialect;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.zap.framework.orm.dao.IBaseDao;
 import org.zap.framework.orm.dao.impl.BaseDao;
 import org.zap.framework.orm.extractor.EnhanceMapListExtractor;
 import org.zap.framework.orm.itf.IPaginator;
@@ -13,9 +14,9 @@ import java.util.Map;
 
 public class MysqlPaginator implements IPaginator {
 
-	BaseDao baseDao;
+	IBaseDao baseDao;
 	
-	public MysqlPaginator(BaseDao baseDao) {
+	public MysqlPaginator(IBaseDao baseDao) {
 		this.baseDao = baseDao;
 	}
 	

@@ -10,6 +10,7 @@ import org.zap.framework.orm.compiler.JoinProperty.MainProp;
 import org.zap.framework.orm.compiler.PreCompiler;
 import org.zap.framework.orm.converter.DefaultConverter;
 import org.zap.framework.orm.criteria.call.CountFunction;
+import org.zap.framework.orm.dao.IBaseDao;
 import org.zap.framework.orm.dao.dialect.DBType;
 import org.zap.framework.orm.dao.dialect.PaginatorFactory;
 import org.zap.framework.orm.dao.impl.BaseDao;
@@ -47,8 +48,15 @@ public class Query<T> {
 
         function = true;
         select.addToSelection(new CountFunction());
-
         return baseDao.getJdbcTemplate().queryForObject(toString(), toParams(), Integer.class);
+    }
+
+    public int count1() {
+
+        function = true;
+        select.addToSelection(new CountFunction());
+        System.out.println(toString());
+        return 0;
     }
 
     /**
@@ -429,7 +437,7 @@ public class Query<T> {
 
     private Class<T> clazz;
 
-    private BaseDao baseDao;
+    private IBaseDao baseDao;
 
     private BeanProperty bp;
 
@@ -457,7 +465,7 @@ public class Query<T> {
      */
     private Map<String, String> colsAliasCache = new HashMap<String, String>();
 
-    public Query(BaseDao baseDao, Class<T> clazz) {
+    public Query(IBaseDao baseDao, Class<T> clazz) {
         this(clazz);
         this.baseDao = baseDao;
     }
