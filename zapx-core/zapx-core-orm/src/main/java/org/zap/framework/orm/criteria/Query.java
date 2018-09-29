@@ -31,31 +31,31 @@ public class Query<T> {
     /************************* 获取结果的方法 ***********************/
     public List<Map<String, Object>> mapList() {
         projection();
-        return baseDao.query(toString(), toParams(), new MapListExtractor());
+        return baseDao.query(toSqlString(), toParams(), new MapListExtractor());
     }
 
     public List<T> list() {
         projection();
-        return baseDao.query(toString(), toParams(), new BeanListExtractor<T>(clazz));
+        return baseDao.query(toSqlString(), toParams(), new BeanListExtractor<T>(clazz));
     }
 
     public List<T> tree() {
         projection();
-        return BeanHelper.buildTree(baseDao.query(toString(), toParams(), new BeanListExtractor<T>(clazz)));
+        return BeanHelper.buildTree(baseDao.query(toSqlString(), toParams(), new BeanListExtractor<T>(clazz)));
     }
 
     public int count() {
 
         function = true;
         select.addToSelection(new CountFunction());
-        return baseDao.getJdbcTemplate().queryForObject(toString(), toParams(), Integer.class);
+        return baseDao.getJdbcTemplate().queryForObject(toSqlString(), toParams(), Integer.class);
     }
 
     public int count1() {
 
         function = true;
         select.addToSelection(new CountFunction());
-        System.out.println(toString());
+        System.out.println(toSqlString());
         return 0;
     }
 
@@ -67,7 +67,7 @@ public class Query<T> {
      * @return
      */
     public PaginationSupport<T> page(int page, int pageSize) {
-        return PaginatorFactory.getInstance(baseDao).queryPage(toString(), page, pageSize, toParams());
+        return PaginatorFactory.getInstance(baseDao).queryPage(toSqlString(), page, pageSize, toParams());
     }
 
     /*******************************************************/
@@ -563,11 +563,9 @@ public class Query<T> {
     }
 
 
-    public String toString() {
-
+    public String toSqlString() {
         projection();
-
-        return select.toString();
+        return select.toSqlString();
     }
 
     public String toCountString() {
@@ -585,17 +583,17 @@ public class Query<T> {
         if (DBType.ORACLE.equals(dbType)) {
             StringBuilder pageSql = new StringBuilder("SELECT * FROM (");
             pageSql.append("SELECT ROWNUM RW, MT.* FROM (")
-                    .append(select.toString())
+                    .append(select.toSqlString())
                     .append(") MT WHERE ROWNUM <= ? ")
                     .append(") MST WHERE MST.RW >= ? ");
 
             return pageSql.toString();
 
         } else if (DBType.MYSQL.equals(dbType)) {
-            return select.toString() + " LIMIT ?, ? ";
+            return select.toSqlString() + " LIMIT ?, ? ";
         }
 
-        return select.toString();
+        return select.toSqlString();
     }
 
     public Object[] toParams() {

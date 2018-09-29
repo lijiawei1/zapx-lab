@@ -136,8 +136,8 @@ public class SelectQuery implements Outputable, ValueSet {
         return Collections.unmodifiableList(order);
     }
 
-    public String toString() {
-        return ToStringer.toString(this);
+    public String toSqlString() {
+        return ToStringer.toSqlString(this);
     }
 
     public void write(Output out) {
@@ -150,6 +150,9 @@ public class SelectQuery implements Outputable, ValueSet {
         appendIndentedList(out, selection, ",");
 
         Set<Table> tables = findAllUsedTables();
+        if (tables.size() == 0) {
+            tables.add(this.mainTable);
+        }
         if (!tables.isEmpty()) {
 	        out.println("FROM");
 

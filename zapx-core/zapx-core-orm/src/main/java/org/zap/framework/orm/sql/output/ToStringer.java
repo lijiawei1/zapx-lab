@@ -6,7 +6,7 @@ package org.zap.framework.orm.sql.output;
  * @author <a href="mailto:joe@truemesh.com">Joe Walnes</a>
  */
 public class ToStringer {
-    public static String toString(Outputable outputable) {
+    public static String toSqlString(Outputable outputable) {
         Output out = new Output("    ");
         outputable.write(out);
         return out.toString();
