@@ -26,14 +26,14 @@ public class MyPoiTransformer extends AbstractTransformer {
 	public MyPoiTransformer(Workbook workbook) {
 	        this.workbook = workbook;
     }
-	   
+
     public static MyPoiTransformer createTransformer(InputStream is, OutputStream os) throws Exception {
     	MyPoiTransformer transformer = createTransformer(is);
         transformer.outputStream = os;
         transformer.inputStream = is;
         return transformer;
     }
-    
+
     public static MyPoiTransformer createTransformer(InputStream is) throws Exception {
         Workbook workbook = WorkbookFactory.create(is);
         return createTransformer(workbook);

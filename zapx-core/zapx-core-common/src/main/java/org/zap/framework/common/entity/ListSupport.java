@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 封装列表数据，方便后面扩展
+ */
 public class ListSupport {
 
     Object data;

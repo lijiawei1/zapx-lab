@@ -12,6 +12,7 @@ import org.jxls.transform.poi.PoiUtil;
 import org.springframework.util.Assert;
 import org.zap.framework.common.entity.LigerGrid;
 import org.zap.framework.common.excel.jxls.ExcelEngine;
+import org.zap.framework.common.excel.jxls.ExcelExporter;
 import org.zap.framework.common.excel.jxls.MyPoiTransformer;
 import org.zap.framework.common.excel.jxls.MyXlsCommentAreaBuilder;
 import org.zap.framework.exception.BusinessException;
@@ -41,6 +42,8 @@ import static org.jxls.transform.poi.PoiTransformer.POI_CONTEXT_KEY;
  * Created by Shin on 2016/3/29.
  */
 public class ExcelUtils {
+
+    static int MAX_ROWS = 65535;
 
     public static void updateCache(String key, String url, String file) {
         excelImportCache.put(key, new ExcelCacheHolder(url, file));
@@ -358,37 +361,38 @@ public class ExcelUtils {
      * @throws IOException
      */
     public static void export(ExcelDataRequest dataReqeust, HttpServletRequest request, HttpServletResponse response, List<?> dataList) throws IOException {
-        String outFileName = StringUtils.defaultIfEmpty(dataReqeust.getFile_name(), "导出报表.xls");
-        // 中文乱码问题
-        String agent = (String) request.getHeader("USER-AGENT");
-        if (agent != null && agent.indexOf("MSIE") == -1) {
-            outFileName = "=?UTF-8?B?" + (new String(Base64.encodeBase64(outFileName.getBytes("UTF-8")))) + "?="; // FireFox编码
-        } else {
-            outFileName = java.net.URLEncoder.encode(outFileName, "UTF-8"); // IE编码
-        }
-        response.setHeader("pragma", "no-cache");
-        response.setHeader("Content-Disposition", "attachment;filename=" + outFileName);
-        response.setContentType("application/msexcel;charset=UTF-8");
-
-        OutputStream os = response.getOutputStream();
-        try {
-            // 生成Excel
-            //List<String> headers = Arrays.asList("状态", "接收号码", "接收时间", "计费条数", "短信标题", "短信内容", "发送人", "公司名称");
-            List<String> headers = Arrays.asList(dataReqeust.getHeaders().split(","));
-            SimpleExporter exporter = new SimpleExporter();
-            exporter.gridExport(headers, dataList, dataReqeust.getNames(), os);
-        } finally {
-            if (os != null) {
-                os.close();
-            }
-        }
+        ExcelExporter.exportSimple(dataReqeust, request, response, dataList);
+        //String outFileName = StringUtils.defaultIfEmpty(dataReqeust.getFile_name(), "导出报表.xls");
+        //// 中文乱码问题
+        //String agent = (String) request.getHeader("USER-AGENT");
+        //if (agent != null && agent.indexOf("MSIE") == -1) {
+        //    outFileName = "=?UTF-8?B?" + (new String(Base64.encodeBase64(outFileName.getBytes("UTF-8")))) + "?="; // FireFox编码
+        //} else {
+        //    outFileName = java.net.URLEncoder.encode(outFileName, "UTF-8"); // IE编码
+        //}
+        //response.setHeader("pragma", "no-cache");
+        //response.setHeader("Content-Disposition", "attachment;filename=" + outFileName);
+        //response.setContentType("application/msexcel;charset=UTF-8");
+        //
+        //OutputStream os = response.getOutputStream();
+        //try {
+        //    // 生成Excel
+        //    //List<String> headers = Arrays.asList("状态", "接收号码", "接收时间", "计费条数", "短信标题", "短信内容", "发送人", "公司名称");
+        //    List<String> headers = Arrays.asList(dataReqeust.getHeaders().split(","));
+        //    SimpleExporter exporter = new SimpleExporter();
+        //    exporter.gridExport(headers, dataList, dataReqeust.getNames(), os);
+        //} finally {
+        //    if (os != null) {
+        //        os.close();
+        //    }
+        //}
     }
 
 
     public static void export(ExcelDataRequest dataReqeust, HttpServletRequest request, HttpServletResponse response, LigerGrid grid) throws IOException {
-
         if (grid.getTotal() > 0) {
-            ExcelUtils.export(dataReqeust, request, response, (List<Map<String, Object>>) grid.getRows());
+            //ExcelUtils.export(dataReqeust, request, response, (List<Map<String, Object>>) grid.getRows());
+            ExcelExporter.exportSimple(dataReqeust, request, response, (List<Map<String, Object>>) grid.getRows());
         } else {
             response.setContentType("text/plain; charset=UTF-8");
             response.getWriter().write("无数据");
@@ -410,24 +414,25 @@ public class ExcelUtils {
     public static void exportTmpl(ExcelDataRequest dataReqeust, HttpServletRequest request, HttpServletResponse response, List<?> dataList,
                                   String template, Map<String, Object> param) throws IOException {
 
-        String outFileName = StringUtils.defaultIfEmpty(dataReqeust.getFile_name(), "导出报表.xls");
-        // 中文乱码问题
-        String agent = request.getHeader("USER-AGENT");
-        if (agent != null && agent.indexOf("MSIE") == -1) {
-            outFileName = "=?UTF-8?B?" + (new String(Base64.encodeBase64(outFileName.getBytes("UTF-8")))) + "?="; // FireFox编码
-        } else {
-            outFileName = java.net.URLEncoder.encode(outFileName, "UTF-8"); // IE编码
-        }
-        response.setHeader("pragma", "no-cache");
-        response.setHeader("Content-Disposition", "attachment;filename=" + outFileName);
-        response.setContentType("application/msexcel;charset=UTF-8");
-
-        Map<String, Object> contextMap = new HashMap<>();
-        contextMap.put("details", dataList);
-        contextMap.put("main", param);
-
-        Context context = new Context(contextMap);
-        ExcelEngine.processTemplate(ExcelUtils.class.getResourceAsStream(template), response.getOutputStream(), context);
+        //String outFileName = StringUtils.defaultIfEmpty(dataReqeust.getFile_name(), "导出报表.xls");
+        //// 中文乱码问题
+        //String agent = request.getHeader("USER-AGENT");
+        //if (agent != null && agent.indexOf("MSIE") == -1) {
+        //    outFileName = "=?UTF-8?B?" + (new String(Base64.encodeBase64(outFileName.getBytes("UTF-8")))) + "?="; // FireFox编码
+        //} else {
+        //    outFileName = java.net.URLEncoder.encode(outFileName, "UTF-8"); // IE编码
+        //}
+        //response.setHeader("pragma", "no-cache");
+        //response.setHeader("Content-Disposition", "attachment;filename=" + outFileName);
+        //response.setContentType("application/msexcel;charset=UTF-8");
+        //
+        //Map<String, Object> contextMap = new HashMap<>();
+        //contextMap.put("details", dataList);
+        //contextMap.put("main", param);
+        //
+        //Context context = new Context(contextMap);
+        //ExcelEngine.processTemplate(ExcelUtils.class.getResourceAsStream(template), response.getOutputStream(), context);
+        ExcelExporter.exportTmpl(dataReqeust, request, response, dataList, template, param);
 
     }
 
@@ -437,7 +442,7 @@ public class ExcelUtils {
      * @param response
      * @param grid
      * @param template 模板文件的路径
-     * @throws IOException
+     * @throws IOException 1
      */
     public static void exportTmpl(ExcelDataRequest dataReqeust, HttpServletRequest request, HttpServletResponse response, LigerGrid grid, String template) throws IOException {
         exportTmpl(dataReqeust, request, response, grid, template, null);
@@ -451,7 +456,7 @@ public class ExcelUtils {
      * @param grid
      * @param template 模板文件的路径
      * @param vars     参数
-     * @throws IOException
+     * @throws IOException 1
      */
     public static void exportTmpl(ExcelDataRequest dataReqeust, HttpServletRequest request, HttpServletResponse response, LigerGrid grid, String template, Map<String, Object> vars) throws IOException {
 
@@ -460,8 +465,7 @@ public class ExcelUtils {
             if (vars != null) {
                 params.putAll(vars);
             }
-            ExcelUtils.exportTmpl(dataReqeust, request, response, (List<Map<String, Object>>) grid.getRows(),
-                    template, params);
+            ExcelExporter.exportTmpl(dataReqeust, request, response, (List<Map<String, Object>>) grid.getRows(), template, params);
         } else {
             response.setContentType("text/plain; charset=UTF-8");
             response.getWriter().write("无数据");
@@ -491,53 +495,53 @@ public class ExcelUtils {
      * @param configs  sheet配置
      * @param request
      * @param response
-     * @param fileName 文件名称
+     * @param fileName 文件名称 1
      */
     public static void exportMultiSheet(SheetConfig[] configs, HttpServletRequest request, HttpServletResponse response, String fileName) {
-
-        try (InputStream templateStream = SimpleExporter.class.getResourceAsStream(GRID_TEMPLATE_XLS)) {
-            try (OutputStream targetStream = response.getOutputStream()) {
-
-                String outFileName = StringUtils.defaultIfEmpty(fileName, "导出报表.xls");
-                // 中文乱码问题
-                String agent = request.getHeader("USER-AGENT");
-                if (agent != null && agent.indexOf("MSIE") == -1) {
-                    outFileName = "=?UTF-8?B?" + (new String(Base64.encodeBase64(outFileName.getBytes("UTF-8")))) + "?="; // FireFox编码
-                } else {
-                    outFileName = java.net.URLEncoder.encode(outFileName, "UTF-8"); // IE编码
-                }
-                response.setHeader("pragma", "no-cache");
-                response.setHeader("Content-Disposition", "attachment;filename=" + outFileName);
-                response.setContentType("application/msexcel;charset=UTF-8");
-
-                MyPoiTransformer transformer = MyPoiTransformer.createTransformer(templateStream, targetStream);
-                AreaBuilder areaBuilder = new MyXlsCommentAreaBuilder(transformer);
-                ExcelEngine.addMyCommand();// 方便拓展
-                List<Area> xlsAreaList = areaBuilder.build();
-                if (xlsAreaList.isEmpty()) {
-                    throw new BusinessException("没有设置模板");
-                }
-
-                Area xlsArea = xlsAreaList.get(0);
-                String sourceSheetName = xlsArea.getStartCellRef().getSheetName();
-                for (int i = 0; i < configs.length; i++) {
-                    Context context = new Context();
-                    context.putVar(POI_CONTEXT_KEY, new PoiUtil());
-                    context.putVar("headers", configs[i].getHeaders());
-                    context.putVar("data", configs[i].getDataObjects());
-                    GridCommand gridCommand = (GridCommand) xlsArea.getCommandDataList().get(0).getCommand();
-                    gridCommand.setProps(configs[i].getObjectProps());
-                    xlsArea.applyAt(new CellRef(configs[i].getSheetName() + "!A1"), context);
-                }
-
-                transformer.deleteSheet(sourceSheetName);
-                transformer.write();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ExcelExporter.exportMultiSheet(configs, request, response, fileName);
+        //try (InputStream templateStream = SimpleExporter.class.getResourceAsStream(GRID_TEMPLATE_XLS)) {
+        //    try (OutputStream targetStream = response.getOutputStream()) {
+        //
+        //        String outFileName = StringUtils.defaultIfEmpty(fileName, "导出报表.xls");
+        //        // 中文乱码问题
+        //        String agent = request.getHeader("USER-AGENT");
+        //        if (agent != null && agent.indexOf("MSIE") == -1) {
+        //            outFileName = "=?UTF-8?B?" + (new String(Base64.encodeBase64(outFileName.getBytes("UTF-8")))) + "?="; // FireFox编码
+        //        } else {
+        //            outFileName = java.net.URLEncoder.encode(outFileName, "UTF-8"); // IE编码
+        //        }
+        //        response.setHeader("pragma", "no-cache");
+        //        response.setHeader("Content-Disposition", "attachment;filename=" + outFileName);
+        //        response.setContentType("application/msexcel;charset=UTF-8");
+        //
+        //        MyPoiTransformer transformer = MyPoiTransformer.createTransformer(templateStream, targetStream);
+        //        AreaBuilder areaBuilder = new MyXlsCommentAreaBuilder(transformer);
+        //        ExcelEngine.addMyCommand();// 方便拓展
+        //        List<Area> xlsAreaList = areaBuilder.build();
+        //        if (xlsAreaList.isEmpty()) {
+        //            throw new BusinessException("没有设置模板");
+        //        }
+        //
+        //        Area xlsArea = xlsAreaList.get(0);
+        //        String sourceSheetName = xlsArea.getStartCellRef().getSheetName();
+        //        for (int i = 0; i < configs.length; i++) {
+        //            Context context = new Context();
+        //            context.putVar(POI_CONTEXT_KEY, new PoiUtil());
+        //            context.putVar("headers", configs[i].getHeaders());
+        //            context.putVar("data", configs[i].getDataObjects());
+        //            GridCommand gridCommand = (GridCommand) xlsArea.getCommandDataList().get(0).getCommand();
+        //            gridCommand.setProps(configs[i].getObjectProps());
+        //            xlsArea.applyAt(new CellRef(configs[i].getSheetName() + "!A1"), context);
+        //        }
+        //
+        //        transformer.deleteSheet(sourceSheetName);
+        //        transformer.write();
+        //    } catch (Exception e) {
+        //        e.printStackTrace();
+        //    }
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
 
 
     }

@@ -6,50 +6,59 @@ import org.zap.framework.util.SqlUtils;
 import java.io.Serializable;
 
 /**
+ *
+ * EXCEL报表请求内容
+ *
  * Created by Shin on 2017/12/4.
  */
 public class ExcelDataRequest implements Serializable {
 
+    /**
+     * 业务字段，可拓展，来源公司
+     */
+    @JsonIgnore
+    String from_company;
     /**
      * 文件名称
      */
     @JsonIgnore
     String file_name;
     /**
-     * 来源公司
-     */
-    @JsonIgnore
-    String from_company;
-    /**
-     * 头字段
+     * 报表列名字段，逗号隔开
      */
     @JsonIgnore
     String headers;
     /**
-     * 值字段
+     * 实体、数据表对应的值字段， 逗号隔开，和headers的顺序一一对应
      */
     @JsonIgnore
     String names;
     /**
-     * 过滤条件
+     * 报表尾业务规则，一般是合计，可以自定义，# 表示不做任何处理
+     */
+    @JsonIgnore
+    String footers;
+    /**
+     * 过滤条件，JSON化
      */
     String where;
     /**
-     * 排序
+     * 排序字段名，逗号分隔
      */
     String sortname;
     /**
-     * 排序
+     * 每个字段的排序规则，逗号分隔
      */
     String sortorder;
     /**
-     * 页码
+     * 当前页码，从0开始
      */
     int page = 0;
     /**
-     * 导出65534条数据
+     * 导出60000条数据
+     * 低版本EXCEL最大值
      */
-    int pagesize = 65534;
+    int pagesize = 60000;
 
     public String getOrderBy() {
         return SqlUtils.getSortPart(sortname, sortorder);
@@ -127,5 +136,13 @@ public class ExcelDataRequest implements Serializable {
 
     public void setPagesize(int pagesize) {
         this.pagesize = pagesize;
+    }
+
+    public String getFooters() {
+        return footers;
+    }
+
+    public void setFooters(String footers) {
+        this.footers = footers;
     }
 }

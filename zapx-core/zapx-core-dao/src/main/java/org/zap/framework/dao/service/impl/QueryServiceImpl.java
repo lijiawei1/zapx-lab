@@ -15,6 +15,7 @@ import org.zap.framework.common.json.CustomObjectMapper;
 import org.zap.framework.dao.service.IQueryService;
 import org.zap.framework.exception.BusinessException;
 import org.zap.framework.orm.dao.IBaseDao;
+import org.zap.framework.orm.extractor.BeanListExtractor;
 import org.zap.framework.util.SqlUtils;
 
 import java.io.File;
@@ -44,7 +45,7 @@ public class QueryServiceImpl implements IQueryService {
 
     Object queryInner(PaginationRequest request, String where, String alias, String sql, boolean page,
                  Consumer<Map<String, Object>> consumer) {
-        return queryInner(request, where, alias, sql, page, consumer, new FilterRule[]{});
+        return query(request, where, alias, sql, page, consumer, new FilterRule[]{});
     }
 
     /**
@@ -58,7 +59,7 @@ public class QueryServiceImpl implements IQueryService {
      * @param extRules
      * @return
      */
-    Object queryInner(PaginationRequest request, String where, String alias, String sql, boolean page,
+    public Object query(PaginationRequest request, String where, String alias, String sql, boolean page,
                                Consumer<Map<String, Object>> consumer, FilterRule[] extRules) {
         //增强多字段排序
         String orderPart = SqlUtils.getSortPart(request.getSortName(), request.getSortOrder());
@@ -115,6 +116,63 @@ public class QueryServiceImpl implements IQueryService {
             log.error("查询错误", ex);
             return page ? new LigerGridPager<>(new PaginationSupport<>()) : new LigerGrid();
         }
+    }
+
+    /**
+     * 查询对象列表
+     * @param request
+     * @param where
+     * @param alias
+     * @param sql
+     * @param clazz
+     * @param consumer
+     * @param <T>
+     * @return
+     */
+    @Override
+    public <T> ListSupport queryForEntityList(PaginationSupport request, String where, String alias, String sql, Class<T> clazz,
+                                              Consumer<Map<String, Object>> consumer) {
+        //增强多字段排序
+        String orderPart = SqlUtils.getSortPart(request.getSortname(), request.getSortorder());
+        List<T> a = new ArrayList<>();
+        try {
+//            String sql = readSql(resource);
+
+            String commandText = "";
+            Map<String, Object> parmsMap = new HashMap<>();
+
+            FilterGroup group = new FilterGroup();
+            if (StringUtils.isNotBlank(where)) {
+                group = read(where, FilterGroup.class);
+            }
+            if (group.getRules() != null && group.getRules().size() > 0) {
+                //翻译where条件
+                FilterTranslator whereTranslator = new FilterTranslator(group, alias, getBaseDao().getDbTypeString(), true);
+                //翻译的sql和参数
+                commandText = whereTranslator.getNameParmsCommandText();
+                parmsMap = whereTranslator.getParmsMap();
+
+                if (consumer != null) {
+                    consumer.accept(parmsMap);
+                }
+
+                //插入条件
+                if (StringUtils.isNotBlank(commandText)) {
+                    sql = sql.replace("/*AND*/", " AND " + commandText);
+                    sql = sql.replace("/*WHERE*/", " WHERE " + commandText);
+                }
+            }
+
+            sql += (" " + orderPart);
+            //非分页表格
+            a = getBaseDao().getNameTemplate().query(sql, parmsMap, new BeanListExtractor<>(clazz));
+            return new ListSupport(a, a.size(), parmsMap);
+
+        } catch (Exception ex) {
+            log.error("查询错误", ex);
+            return new ListSupport();
+        }
+
     }
 
     /**

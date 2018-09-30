@@ -51,6 +51,45 @@ public class ExcelEngine {
 	}
 
 	/**
+	 * 导出报表动态列
+	 * @param templateStream
+	 * @param targetStream
+	 * @param context
+     */
+	public static void processDynamicColumnTemplate(InputStream templateStream, OutputStream targetStream, Context context) {
+
+		try {
+			MyPoiTransformer transformer = MyPoiTransformer.createTransformer(templateStream, targetStream);
+			AreaBuilder areaBuilder = new MyXlsCommentAreaBuilder(transformer);
+			addMyCommand();// 方便拓展
+			List<Area> xlsAreaList = areaBuilder.build();
+			if (xlsAreaList.isEmpty()) {
+				throw new BusinessException("没有设置模板");
+			}
+			Area xlsArea = xlsAreaList.get(0);
+			String sourceSheetName = xlsArea.getStartCellRef().getSheetName();
+
+			DynamicGridCommand gridCommand = (DynamicGridCommand) xlsArea.getCommandDataList().get(0).getCommand();
+			gridCommand.setProps((String)context.getVar("props"));
+
+			//是否输出到另外一个页签
+			xlsArea.applyAt(new CellRef(sourceSheetName + "!A1"), context);
+
+			if (processFormulas) {
+				//使用动态列公式处理器
+				xlsArea.setFormulaProcessor(new DynamicFormulaProcessor(context));
+				xlsArea.processFormulas();
+			}
+
+			transformer.write();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new BusinessException("", ex);
+		}
+
+	}
+
+	/**
 	 * 输出报表
 	 * @param templateStream
 	 * @param targetStream
@@ -165,6 +204,7 @@ public class ExcelEngine {
 	}
 
 	public static void addMyCommand() throws Exception {
+		MyXlsCommentAreaBuilder.addCommandMapping("eachImage", EachImageCommand.class);
 		MyXlsCommentAreaBuilder.addCommandMapping("groupRow",GroupRowCommand.class);
 		MyXlsCommentAreaBuilder.addCommandMapping("combineRow",CombineRowCommand.class);
 		MyXlsCommentAreaBuilder.addCommandMapping("combineCol",CombineColCommand.class);
@@ -172,7 +212,8 @@ public class ExcelEngine {
 		MyXlsCommentAreaBuilder.addCommandMapping("eachGrid",EachGridCommand.class);
 		MyXlsCommentAreaBuilder.addCommandMapping("gridHeader",GridHeaderCommand.class);
 		MyXlsCommentAreaBuilder.addCommandMapping("gridData",GridDataCommand.class);
-		
+		MyXlsCommentAreaBuilder.addCommandMapping("dynamicGrid",DynamicGridCommand.class);
+
 	}
 
 	private static void setFormulaProcessor(Area xlsArea) {
