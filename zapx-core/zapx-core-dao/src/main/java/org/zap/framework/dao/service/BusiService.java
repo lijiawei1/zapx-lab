@@ -123,7 +123,6 @@ public class BusiService extends BaseService {
      * @param sql      脚本
      * @param page     是否分页数据
      * @param consumer 参数处理
-     * @param <T>
      * @return
      */
     public Object gridCommonByScript(LigerGridPager<?> lgp, String where, String alias, String sql, boolean page, Consumer<Map<String, Object>> consumer) {
@@ -253,6 +252,64 @@ public class BusiService extends BaseService {
     }
 
     /**
+     * 分页查询接口，组条件(by 王老吉)
+     *
+     * @param clazz
+     * @param req
+     * @param where
+     * @param dr
+     * @param myGroups
+     * @param <T>
+     * @return
+     */
+    public <T> PaginationSupport<T> page(Class<T> clazz, LigerGridPager<?> req, String where, boolean dr, FilterGroup[] myGroups) {
+        //增强多字段排序
+        String orderPart = SqlUtils.getSortPart(req.getSortname(), req.getSortorder());
+
+        //分页参数
+        int currentPage = req.getPage() - 1;
+        int pageSize = req.getPagesize();
+
+        //获取表别名
+        JdbcTable annTable = (JdbcTable) clazz.getAnnotation(JdbcTable.class);
+        String alias = annTable.alias();
+
+        FilterGroup group = new FilterGroup();
+        if (StringUtils.isNotBlank(where)) {
+            try {
+                group =  this.customObjectMapper.readValue(where, FilterGroup.class);
+            } catch (IOException var15) {
+                ;
+            }
+        }
+        if (dr) {
+            group.getRules().add(new FilterRule("DR", 0));
+        }
+        /***************************/
+        List<FilterGroup> groups = new ArrayList<>();
+        if (group.getGroups() != null) {
+            groups = group.getGroups();
+        }
+
+        if (myGroups != null && myGroups.length > 0) {
+            for (int i = 0; i < myGroups.length; ++i) {
+                groups.add(myGroups[i]);
+            }
+        }
+        group.setGroups(groups);
+        /**************************/
+
+        if (group.getRules() != null && group.getRules().size() > 0) {
+            FilterTranslator whereTranslator = new FilterTranslator(group, alias, this.baseDao.getDbTypeString());
+            String commandText = whereTranslator.getCommandText();
+            Object[] parmsArray = whereTranslator.getParmsArray();
+            return this.baseDao.queryPage(clazz, commandText + orderPart, parmsArray, currentPage, pageSize);
+        } else {
+            return this.baseDao.queryPage(clazz, orderPart, currentPage, pageSize);
+        }
+    }
+
+    /**
      * 分页查询接口
      *
      * @param clazz
@@ -323,35 +380,7 @@ public class BusiService extends BaseService {
      * @return
      */
     public <T> PaginationSupport<T> page(Class<T> clazz, LigerGridPager<?> req, String where, boolean dr) {
-
-        //排序部分
-        String orderPart = SqlUtils.getSortPart(req.getSortname(), req.getSortorder());
-
-        //分页参数
-        int currentPage = req.getPage() - 1;
-        int pageSize = req.getPagesize();
-        //获取表别名
-        JdbcTable annTable = clazz.getAnnotation(JdbcTable.class);
-        String alias = annTable.alias();
-        //如果where条件不为空
-        if (where != null & !"".equals(where)) {
-            //反序列化where条件
-            FilterGroup group = null;
-            try {
-                group = customObjectMapper.readValue(where, FilterGroup.class);
-            } catch (IOException e) {
-                group = new FilterGroup();
-            }
-            //翻译where条件
-            FilterTranslator whereTranslator = new FilterTranslator(group, alias, baseDao.getDbTypeString());
-            //翻译的sql和参数
-            String commandText = whereTranslator.getCommandText();
-            Object[] parmsArray = whereTranslator.getParmsArray();
-            //数据库分页查询
-            return baseDao.queryPage(clazz, commandText + orderPart, parmsArray, currentPage, pageSize);
-        }
-
-        return baseDao.queryPage(clazz, (dr ? alias + ".DR = 0 " : "") + orderPart, currentPage, pageSize);
+        return page(clazz, req, where, dr, new FilterRule[0]);
     }
 
     public <T> PaginationSupport<T> page(Class<T> clazz, LigerGridPager<?> req, String where) {
