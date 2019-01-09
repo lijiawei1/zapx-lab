@@ -169,7 +169,7 @@ public class SelectSqlCreator extends BaseCreator {
     private String processClause(String clause, boolean append) {
 
         String s = StringUtils.trimToEmpty(clause);
-        if (s.startsWith("ORDER")) {
+        if (s.toUpperCase().startsWith("ORDER")) {
             return " " + s;
         } else if (s.length() > 0) {
             if (append) {
