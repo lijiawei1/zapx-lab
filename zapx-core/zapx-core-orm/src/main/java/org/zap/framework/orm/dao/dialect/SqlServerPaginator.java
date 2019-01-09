@@ -28,6 +28,11 @@ public class SqlServerPaginator implements IPaginator {
     }
 
     @Override
+    public <T> T queryOneByPage(Class<T> clazz, String clause, Object[] params) {
+        return null;
+    }
+
+    @Override
     public <T> PaginationSupport<T> queryPage(Class<T> clazz, String clause, Object[] params, int currentPage, int pageSize) {
 
         PaginationSupport<T> ps = new PaginationSupport<T>();

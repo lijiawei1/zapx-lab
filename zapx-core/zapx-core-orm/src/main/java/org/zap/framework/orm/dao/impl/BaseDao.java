@@ -250,10 +250,8 @@ public class BaseDao implements IBaseDao {
      * @return 结果集中首个实体，没有结果返回空
      */
     public <T> T queryOneByClause(Class<T> clazz, String clause, Object... params) {
-
-        List<T> query = jdbcTemplate.query(SQLUtils.format(selecteSqlCreator.createByClauseSql(clazz, null, clause).toString(), getDbTypeString()), params,
-                new BeanListExtractor<T>(clazz, lobHandler));
-        return query == null || query.size() == 0 ? null : query.get(0);
+        //通过分页限制
+        return PaginatorFactory.getInstance(this).queryOneByPage(clazz, clause, params);
     }
 
     /**

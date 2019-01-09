@@ -11,6 +11,7 @@ import org.zap.framework.common.entity.pagination.PaginationSupport;
 import org.zap.framework.orm.creator.SelectSqlCreator;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +24,16 @@ public class OraclePaginator implements IPaginator {
 	
 	public OraclePaginator(IBaseDao baseDao) {
 		this.baseDao = baseDao;
+	}
+
+	public <T> T queryOneByPage(Class<T> clazz, String clause, Object[] params) {
+
+		List<T> query = baseDao.getJdbcTemplate().query(
+				SQLUtils.formatOracle(SelectSqlCreator.getInstance().createPageSql(clazz, clause).toString()),
+				ArrayUtils.addAll(params, new Object[]{1, 1}),
+				new BeanListExtractor<T>(clazz, baseDao.getLobHandler()));
+
+		return query == null || query.size() == 0 ? null : query.get(0);
 	}
 
 	@Override

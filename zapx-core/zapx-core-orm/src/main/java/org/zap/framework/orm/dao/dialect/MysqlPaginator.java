@@ -19,7 +19,12 @@ public class MysqlPaginator implements IPaginator {
 	public MysqlPaginator(IBaseDao baseDao) {
 		this.baseDao = baseDao;
 	}
-	
+
+	@Override
+	public <T> T queryOneByPage(Class<T> clazz, String clause, Object[] params) {
+		return null;
+	}
+
 	@Override
 	public <T> PaginationSupport<T> queryPage(Class<T> clazz, String clause, Object[] params, int currentPage, int pageSize) {
 		

@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public interface IPaginator {
 
+	<T> T queryOneByPage(Class<T> clazz, String clause, Object[] params);
+
 	<T> PaginationSupport<T> queryPage(Class<T> clazz, String clause, Object[] params, int currentPage, int pageSize);
 
 	PaginationSupport queryPage(String sql, int currentPage, int pageSize, Object... params);
