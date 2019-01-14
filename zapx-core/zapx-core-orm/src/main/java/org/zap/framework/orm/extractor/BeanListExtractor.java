@@ -2,6 +2,7 @@ package org.zap.framework.orm.extractor;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.support.lob.LobHandler;
+import org.zap.framework.orm.annotation.JdbcTable;
 import org.zap.framework.orm.compiler.JoinProperty;
 import org.zap.framework.orm.compiler.TableProperty;
 import org.zap.framework.orm.compiler.BeanProperty;
@@ -49,7 +50,8 @@ public class BeanListExtractor<T> implements Extractor<List<T>> {
 		BeanProperty beanProperty = compiler.getBeanProperty(pojoType);
 		TableProperty tableProperty = compiler.getTableProperty(rs);
 		List<Annotation> classAnnotations = beanProperty.getClassAnnotations();
-		if (classAnnotations == null || classAnnotations.size() == 0) {
+
+		if (classAnnotations == null || !classAnnotations.stream().anyMatch(c -> c instanceof JdbcTable)) {
 			//普通无注解VO
 			while (rs.next()) {
 				ls.add(instance.toBean(rs, beanProperty, tableProperty, pojoType, lobHandler));

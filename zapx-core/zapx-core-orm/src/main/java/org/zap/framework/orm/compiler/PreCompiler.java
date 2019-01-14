@@ -229,7 +229,7 @@ public class PreCompiler {
 				boolean flag = false;
 				for (Annotation an : ans) {
 					bp.getClassAnnotations().add(an);
-					if (an.equals(JdbcTable.class)) {
+					if (an instanceof JdbcTable) {
 						flag = true;
 					}
 				}
