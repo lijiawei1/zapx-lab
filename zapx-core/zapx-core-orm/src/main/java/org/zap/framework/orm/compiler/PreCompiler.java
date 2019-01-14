@@ -225,10 +225,17 @@ public class PreCompiler {
 			Annotation[] ans = clz.getAnnotations();
 			
 			if (ans != null && ans.length > 0) {
+				//存在JdbcTable注解的时候进行解析
+				boolean flag = false;
 				for (Annotation an : ans) {
 					bp.getClassAnnotations().add(an);
+					if (an.equals(JdbcTable.class)) {
+						flag = true;
+					}
 				}
-				parse(bp);
+				if (flag) {
+					parse(bp);
+				}
 			}
 			
 			// 编译Annotation，放到缓存中
