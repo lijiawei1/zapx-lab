@@ -11,7 +11,11 @@ import org.jxls.transform.poi.PoiUtil;
 import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zap.framework.util.DateUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 /**
@@ -166,7 +170,18 @@ public class PoiCellData extends CellData {
                 if( evaluationResult instanceof byte[]){
 
                 }else{
-                    cell.setCellValue((String) evaluationResult);
+
+                    String value = "";
+                    if (evaluationResult instanceof LocalDateTime) {
+                        value = DateUtils.FORMATTER_DATETIME.format((LocalDateTime) evaluationResult);
+                    } else if (evaluationResult instanceof LocalDate) {
+                        value = DateUtils.FORMATTER_DATE.format((LocalDate) evaluationResult);
+                    } else if (evaluationResult instanceof LocalTime) {
+                        value = DateUtils.FORMATTER_TIME.format((LocalTime)evaluationResult);
+                    } else {
+                        value = (String)evaluationResult;
+                    }
+                    cell.setCellValue(value);
                 }
                 break;
             case BOOLEAN:
