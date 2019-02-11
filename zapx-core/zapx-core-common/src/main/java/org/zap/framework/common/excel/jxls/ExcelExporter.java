@@ -63,7 +63,7 @@ public class ExcelExporter {
                 // 生成Excel
                 //List<String> headers = Arrays.asList("状态", "接收号码", "接收时间", "计费条数", "短信标题", "短信内容", "发送人", "公司名称");
                 List<String> headers = Arrays.asList(dataReqeust.getHeaders().split(","));
-                SimpleExporter exporter = new SimpleExporter();
+                EnhanceExporter exporter = new EnhanceExporter();
                 exporter.gridExport(headers, dataList, dataReqeust.getNames(), os);
             } finally {
                 if (os != null) {
