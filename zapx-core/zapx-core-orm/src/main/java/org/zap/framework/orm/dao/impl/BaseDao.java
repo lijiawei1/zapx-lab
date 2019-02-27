@@ -241,6 +241,26 @@ public class BaseDao implements IBaseDao {
     }
 
     /**
+     * 查询业务实体列表
+     *
+     * @param clazz  实体类型
+     * @param clause 条件/排序语句
+     * @param params 查询参数
+     * @param <T>    实体类
+     * @return 实体列表
+     */
+    public <T> List<T> queryByClause(Class<T> clazz, String clause, Map<String, Object> params) {
+        return getNamedParameterJdbcTemplate().query(SQLUtils.format(SelectSqlCreator.getInstance().createByClauseSql(clazz, null, clause).toString(),
+                getDbTypeString()), params,
+                new BeanListExtractor<>(clazz, getLobHandler()));
+    }
+
+    public <T> List<T> query(String sql, Map<String, Object> params, Extractor<List<T>> rsExtractor) {
+        return getNamedParameterJdbcTemplate().query(SQLUtils.format(sql, getDbTypeString()), params, rsExtractor);
+    }
+
+
+    /**
      * 查询业务实体（一个）
      *
      * @param clazz  实体类型
@@ -1240,7 +1260,7 @@ public class BaseDao implements IBaseDao {
     /**
      * 批量提交的大小
      */
-    private static int BATCH_SIZE = 1000;
+    private final static int BATCH_SIZE = 10000;
 
     protected InsertSqlCreator insertSqlCreator = InsertSqlCreator.getInstance();
     protected UpdateSqlCreator updateSqlCreator = UpdateSqlCreator.getInstance();

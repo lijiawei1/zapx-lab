@@ -35,11 +35,15 @@ public interface IBaseDao {
 
     <T> List<T> query(String sql, final Object[] params, Extractor<List<T>> rsExtractor);
 
+    <T> List<T> query(String sql, Map<String, Object> params, Extractor<List<T>> rsExtractor);
+
     <T> List<T> query(String sql, Extractor<List<T>> rsExtractor);
 
     <T> List<T> queryAll(Class<T> clazz);
 
     <T> List<T> queryByClause(Class<T> clazz, String clause, Object... params);
+
+    <T> List<T> queryByClause(Class<T> clazz, String clause, Map<String, Object> params);
 
     <T> T queryOneByClause(Class<T> clazz, String clause, Object... params);
 
