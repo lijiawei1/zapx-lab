@@ -284,8 +284,21 @@ public class BeanRowProcessor {
             switch (tpType) {
                 case Types.VARCHAR:
                 case Types.CHAR: {
-                    return (value == null || StringUtils.isBlank(value.toString())) ?
-                            null : LocalDateTime.from(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").parse(value.toString()));
+
+                    if (value == null)
+                        return null;
+                    String valueTrim = StringUtils.trimToEmpty(value.toString());
+                    if (valueTrim.length() == 0) {
+                        return null;
+                    }
+                    if (valueTrim.length() > 0 && valueTrim.length() < 19) {
+                        String mask = "1900-01-01 00:00:00";
+                        valueTrim += mask.substring(valueTrim.length());
+                    }
+                    if (valueTrim.length() >= 19) {
+                        valueTrim = valueTrim.substring(0, 19);
+                    }
+                    return LocalDateTime.from(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").parse(valueTrim));
                 }
                 case Types.TIMESTAMP:
                 case Types.DATE: {
