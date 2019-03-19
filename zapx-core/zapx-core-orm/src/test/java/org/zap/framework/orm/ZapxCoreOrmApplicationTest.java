@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.zap.framework.orm.dao.IBaseDao;
 import org.zap.framework.test.dao.testcase.EntityCase;
@@ -26,7 +28,7 @@ import java.util.Map;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ZapxCoreOrmApplicationTest {
+public class ZapxCoreOrmApplicationTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -70,17 +72,19 @@ public class ZapxCoreOrmApplicationTest {
 
 
         //清空表
-        iBaseDao.getJdbcTemplate().execute("TRUNCATE TABLE ZAP_TEST");
+        //iBaseDao.getJdbcTemplate().execute("TRUNCATE TABLE ZAP_TEST");
         //读取内容
-        TestVo[] readValues;
+        TestVo[]
+        readValues;
         readValues = ZipUtils.unzipJsonObjectFromFile(new ClassPathResource("script/data10000.dat"), TestVo[].class);
         //插表
         long start = System.currentTimeMillis();
-        int i = iBaseDao.insertArray(readValues, true);
-        long end = System.currentTimeMillis();
-        System.out.println((end - start)/1000);
 
-        System.out.println(i);
+        for (int i = 0; i < 10; i++) {
+            iBaseDao.insertArray(readValues, false);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println((end - start) / 1000);
 
     }
 
